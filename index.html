@@ -3,166 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>奇幻異世界冒險遊戲</title>
+    <title>EZ搜公司工程冒險</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 10px;
-            background-color: #f4f4f9;
+            font-family: "微軟正黑體", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fdf6e3;
+            color: #4e3b2c;
+            background-image: url('https://images.unsplash.com/photo-1526481280690-902a44eeb2c6');
+            background-size: cover;
+            background-attachment: fixed;
         }
         .game-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 248, 220, 0.95);
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         .button {
-            background-color: #4CAF50;
+            background-color: #d4a55d;
             color: white;
             border: none;
-            padding: 10px 20px;
-            text-align: center;
-            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px 5px;
             font-size: 16px;
-            margin: 10px 0;
+            border-radius: 6px;
             cursor: pointer;
-            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            text-align: center;
         }
         .button:hover {
-            background-color: #45a049;
+            background-color: #b97b2f;
         }
         .story-text {
             font-size: 18px;
-            margin-bottom: 20px;
+            line-height: 1.6;
+            min-height: 150px;
         }
-        iframe {
-            margin-top: 30px;
-            width: 100%;
-            max-width: 485px;
-            height: 402px;
-            border: none;
+        .control-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .control-buttons button {
+            width: 30%;
         }
     </style>
 </head>
 <body>
 
 <div class="game-container">
-    <h1>平行時空異世界</h1>
-    <div id="story" class="story-text">
-        歡迎來到文字冒險遊戲！<br>
-        在高中度過”邊緣人”生活的遙，上課時突然跟同班同學一起被召喚到異世界。<br>
-        只要從外掛技能清單中選擇喜歡的技能，神明就會賜予你──<br>
-        本來應該是這樣的，但外掛技能是先搶先贏，所以強勢技能都已經被同學們拿完了！？<br>
-        由於神明惱羞成怒，遙被硬塞了全部剩下的負面技能，還因為技能『邊緣人』的關係，到了異世界也只能孤單一人冒險……。<br>
-        不依賴外掛，還要超越外掛── 最強”邊緣人”的異世界困難模式攻略譚，開幕！
-    </div>
-    <button class="button" id="btn1">左邊遠遠有一人的道路</button>
-    <button class="button" id="btn2">右邊森林疑似有的道路</button>
+    <h1>EZ搜公司工程冒險</h1>
+    <div id="story" class="story-text"></div>
+    <button class="button" id="left-path"></button>
+    <button class="button" id="right-path"></button>
 
-    <h2> 無能技能 </h2>
-    <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/OdzHlzx5Wik" 
-        frameborder="0" allowfullscreen>
-    </iframe>
-
-    <!-- 按鈕用於新增、刪除、修改選項 -->
-    <div>
-        <button class="button" id="addOptionButton">新增選項</button>
-        <button class="button" id="removeOptionButton">刪除選項</button>
-        <button class="button" id="editOptionButton">修改選項</button>
+    <div class="control-buttons">
+        <button class="button" id="add-item">新增項目</button>
+        <button class="button" id="edit-item">編輯項目</button>
+        <button class="button" id="delete-item">刪除項目</button>
     </div>
-    
 </div>
+
+<!-- Background Music -->
+<audio id="bg-music" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/12/04/audio_6642b32b69.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+</audio>
 
 <script>
     let currentStep = 0;
-    let options = []; // 存儲所有選項
+    const storyEl = document.getElementById('story');
+    const audio = document.getElementById('bg-music');
+    const leftButton = document.getElementById('left-path');
+    const rightButton = document.getElementById('right-path');
+    const addItemButton = document.getElementById('add-item');
+    const editItemButton = document.getElementById('edit-item');
+    const deleteItemButton = document.getElementById('delete-item');
 
-    function updateButtons(option1, option2, callback1, callback2) {
-        const btn1 = document.getElementById('btn1');
-        const btn2 = document.getElementById('btn2');
+    let items = [];
 
-        btn1.innerText = option1;
-        btn2.innerText = option2;
+    // Play music when the game starts
+    window.onload = () => {
+        audio.play();
+    };
 
-        btn1.onclick = callback1;
-        btn2.onclick = callback2;
-    }
-
-    function resetButtons() {
-        document.getElementById('btn1').style.display = 'none';
-        document.getElementById('btn2').style.display = 'none';
+    function typeWriter(text, callback) {
+        let i = 0;
+        storyEl.innerHTML = "";
+        const interval = setInterval(() => {
+            storyEl.innerHTML += text.charAt(i);
+            i++;
+            if (i >= text.length) {
+                clearInterval(interval);
+                if (callback) callback();
+            }
+        }, 40);
     }
 
     function startGame() {
-        options = [
-            { text: "左邊遠遠有一人的道路", action: leftPath },
-            { text: "右邊森林疑似有的道路", action: rightPath }
-        ];
-        updateButtons(options[0].text, options[1].text, options[0].action, options[1].action);
+        currentStep = 0;
+        typeWriter("歡迎來到EZ搜公司工程冒險！你是一位工程師，剛加入了圖昀坦工程行，接下來你需要在工作中做出選擇，讓公司順利發展。", () => {
+            updateButtons("參加設備安裝項目", "參加國際貿易項目");
+        });
     }
 
-    function leftPath() {
-        currentStep = 1;
-        document.getElementById('story').innerHTML = "你選擇了左邊的道路，走了幾分鐘後，你遇到了一位神秘的老人。<br>老人問你：'你是想要財富還是智慧？'";
-        updateButtons("給錢錢", "IQ200", () => wealthOrWisdom("給錢錢"), () => wealthOrWisdom("IQ200"));
+    function updateButtons(text1, text2) {
+        leftButton.innerText = text1;
+        rightButton.innerText = text2;
+        leftButton.style.display = 'inline-block';
+        rightButton.style.display = 'inline-block';
     }
 
-    function rightPath() {
-        currentStep = 1;
-        document.getElementById('story').innerHTML = "你選擇了右邊的道路，走了一會兒，你發現自己陷入了一個陷阱。<br>你想用力跳出陷阱，還是靜下心來觀察？";
-        updateButtons("Jump", "左顧右盼", () => escapeTrap("Jump"), () => escapeTrap("左顧右盼"));
+    leftButton.addEventListener('click', () => {
+        const choice = leftButton.innerText;
+        if (currentStep === 0) equipmentInstallation();
+        else if (currentStep === 1) equipmentSupport(choice);
+        else if (currentStep === 2) {
+            typeWriter("結束遊戲！", () => {});
+        }
+    });
+
+    rightButton.addEventListener('click', () => {
+        const choice = rightButton.innerText;
+        if (currentStep === 0) internationalTrade();
+        else if (currentStep === 1) tradeNegotiation(choice);
+        else if (currentStep === 2) {
+            typeWriter("結束遊戲！", () => {});
+        }
+    });
+
+    // Functions for managing items
+    function addItem() {
+        const newItem = prompt("請輸入新的項目名稱：");
+        if (newItem) {
+            items.push(newItem);
+            alert(`新增項目: ${newItem}`);
+            console.log(items);
+        }
     }
 
-    function wealthOrWisdom(choice) {
-        if (choice === "給錢錢") {
-            document.getElementById('story').innerHTML = "老人給了你一箱珠寶、奇蛋、金子，恭喜你獲得了財富！";
+    function editItem() {
+        const itemIndex = prompt("請輸入要編輯的項目編號 (0 - " + (items.length - 1) + "):");
+        if (itemIndex >= 0 && itemIndex < items.length) {
+            const newItem = prompt("請輸入新的項目名稱：", items[itemIndex]);
+            if (newItem) {
+                items[itemIndex] = newItem;
+                alert(`已編輯項目: ${newItem}`);
+                console.log(items);
+            }
         } else {
-            document.getElementById('story').innerHTML = "老人傳授給你一種千年古老的智慧，你的智慧大增！";
+            alert("無效的項目編號！");
         }
-        resetButtons();
     }
 
-    function escapeTrap(choice) {
-        if (choice === "Jump") {
-            document.getElementById('story').innerHTML = "你奮力一跳，成功逃脫了陷阱，獲得了自由！";
+    function deleteItem() {
+        const itemIndex = prompt("請輸入要刪除的項目編號 (0 - " + (items.length - 1) + "):");
+        if (itemIndex >= 0 && itemIndex < items.length) {
+            const removedItem = items.splice(itemIndex, 1);
+            alert(`已刪除項目: ${removedItem}`);
+            console.log(items);
         } else {
-            document.getElementById('story').innerHTML = "你仔細觀察到陷阱的弱點，成功逃脫了困境──最強迷宮皇也是邊緣人！";
+            alert("無效的項目編號！");
         }
-        resetButtons();
     }
 
-    // 新增選項
-    document.getElementById('addOptionButton').onclick = function() {
-        options.push({ text: "新增的選項", action: newOptionAction });
-        updateButtons(options[0].text, options[1].text, options[0].action, options[1].action);
-    };
+    // Event listeners for the control buttons
+    addItemButton.addEventListener('click', addItem);
+    editItemButton.addEventListener('click', editItem);
+    deleteItemButton.addEventListener('click', deleteItem);
 
-    // 刪除選項
-    document.getElementById('removeOptionButton').onclick = function() {
-        if (options.length > 2) {
-            options.pop();
-            updateButtons(options[0].text, options[1].text, options[0].action, options[1].action);
-        }
-    };
-
-    // 修改選項
-    document.getElementById('editOptionButton').onclick = function() {
-        if (options.length > 1) {
-            options[0].text = "修改後的選項";
-            updateButtons(options[0].text, options[1].text, options[0].action, options[1].action);
-        }
-    };
-
-    // 假設的新增選項行為
-    function newOptionAction() {
-        alert("這是新增的選項行為！");
-    }
-
-    // 初始化遊戲
+    // Start the game
     startGame();
 </script>
 
