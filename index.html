@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,71 +8,110 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            padding: 10px;
             background-color: #f4f4f9;
         }
-        #gameText {
-            font-size: 18px;
-            margin-bottom: 20px;
+        .game-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        .button-container {
-            margin-top: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 16px;
-            cursor: pointer;
+        .button {
             background-color: #4CAF50;
             color: white;
             border: none;
+            padding: 10px 20px;
+            text-align: center;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            cursor: pointer;
             border-radius: 5px;
         }
-        button:hover {
+        .button:hover {
             background-color: #45a049;
+        }
+        .story-text {
+            font-size: 18px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
-    <h1>歡迎來到文字冒險遊戲！</h1>
-    <div id="gameText">
-        你選擇了右邊的道路，走了一會兒，突然陷入了一個陷阱！
+<div class="game-container">
+    <h1>文字冒險遊戲</h1>
+    <div id="story" class="story-text">
+        歡迎來到文字冒險遊戲！你正在進入一片神秘的森林，前方有兩條道路。
     </div>
-    <div class="button-container">
-        <button onclick="optionOne()">用力跳出陷阱</button>
-        <button onclick="optionTwo()">靜下心來觀察</button>
-    </div>
+    <button class="button" id="left-path">走左邊的道路</button>
+    <button class="button" id="right-path">走右邊的道路</button>
+</div>
 
-    <script>
-        function optionOne() {
-            document.getElementById("gameText").innerHTML = "你奮力一跳，成功逃脫了陷阱，獲得了自由！";
-            document.querySelector(".button-container").innerHTML = `
-                <button onclick="endGame()">結束遊戲</button>
-                <button onclick="restartGame()">重新開始</button>
-            `;
-        }
+<script>
+    let currentStep = 0;
 
-        function optionTwo() {
-            document.getElementById("gameText").innerHTML = "你仔細觀察到陷阱的弱點，成功逃脫了困境！";
-            document.querySelector(".button-container").innerHTML = `
-                <button onclick="endGame()">結束遊戲</button>
-                <button onclick="restartGame()">重新開始</button>
-            `;
+    document.getElementById('left-path').addEventListener('click', () => {
+        if (currentStep === 0) {
+            leftPath();
+        } else if (currentStep === 1) {
+            wealthOrWisdom("left");
         }
+    });
 
-        function endGame() {
-            document.getElementById("gameText").innerHTML = "遊戲結束，謝謝你的遊玩！";
-            document.querySelector(".button-container").innerHTML = "";
+    document.getElementById('right-path').addEventListener('click', () => {
+        if (currentStep === 0) {
+            rightPath();
+        } else if (currentStep === 1) {
+            escapeTrap("right");
         }
+    });
 
-        function restartGame() {
-            document.getElementById("gameText").innerHTML = "你選擇了右邊的道路，走了一會兒，突然陷入了一個陷阱！";
-            document.querySelector(".button-container").innerHTML = `
-                <button onclick="optionOne()">用力跳出陷阱</button>
-                <button onclick="optionTwo()">靜下心來觀察</button>
-            `;
+    function leftPath() {
+        currentStep = 1;
+        document.getElementById('story').innerHTML = "你選擇了左邊的道路，走了幾分鐘後，你遇到了一位神秘的老人。<br>老人問你：'你是想要財富還是智慧？' 輸入 '財富' 或 '智慧'。";
+        updateButtons('財富', '智慧');
+    }
+
+    function rightPath() {
+        currentStep = 1;
+        document.getElementById('story').innerHTML = "你選擇了右邊的道路，走了一會兒，你發現自己陷入了一個陷阱。<br>你想用力跳出陷阱，還是靜下心來觀察？";
+        updateButtons('跳', '觀察');
+    }
+
+    function wealthOrWisdom(path) {
+        if (path === "left") {
+            document.getElementById('story').innerHTML = "老人給了你一箱金子，恭喜你獲得了財富！";
+        } else {
+            document.getElementById('story').innerHTML = "老人傳授給你一種古老的智慧，你的智慧大增！";
         }
-    </script>
+        resetButtons();
+    }
+
+    function escapeTrap(path) {
+        if (path === "right") {
+            document.getElementById('story').innerHTML = "你奮力一跳，成功逃脫了陷阱，獲得了自由！";
+        } else {
+            document.getElementById('story').innerHTML = "你仔細觀察到陷阱的弱點，成功逃脫了困境！";
+        }
+        resetButtons();
+    }
+
+    function updateButtons(option1, option2) {
+        const buttons = document.querySelectorAll('.button');
+        buttons[0].innerText = option1;
+        buttons[1].innerText = option2;
+    }
+
+    function resetButtons() {
+        const buttons = document.querySelectorAll('.button');
+        buttons[0].style.display = 'none';
+        buttons[1].style.display = 'none';
+    }
+</script>
 
 </body>
 </html>
