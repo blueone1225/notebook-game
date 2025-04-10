@@ -1,4 +1,4 @@
-8<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
@@ -62,24 +62,24 @@
     <button class="button" id="btn1">左邊遠遠有一人的道路</button>
     <button class="button" id="btn2">右邊森林疑似有的道路</button>
 
+    <h2> 無能技能 </h2>
+    <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/OdzHlzx5Wik" 
+        frameborder="0" allowfullscreen>
+    </iframe>
 
-
-<h2> 無能技能 </h2>
-<iframe width="560" height="315" 
-    src="https://www.youtube.com/embed/OdzHlzx5Wik" 
-    frameborder="0" allowfullscreen>
-</iframe>
-
-
-
-
-
-    
+    <!-- 按鈕用於新增、刪除、修改選項 -->
+    <div>
+        <button class="button" id="addOptionButton">新增選項</button>
+        <button class="button" id="removeOptionButton">刪除選項</button>
+        <button class="button" id="editOptionButton">修改選項</button>
+    </div>
     
 </div>
 
 <script>
     let currentStep = 0;
+    let options = []; // 存儲所有選項
 
     function updateButtons(option1, option2, callback1, callback2) {
         const btn1 = document.getElementById('btn1');
@@ -98,7 +98,11 @@
     }
 
     function startGame() {
-        updateButtons("左邊遠遠有一人的道路", "右邊森林疑似有的道路", leftPath, rightPath);
+        options = [
+            { text: "左邊遠遠有一人的道路", action: leftPath },
+            { text: "右邊森林疑似有的道路", action: rightPath }
+        ];
+        updateButtons(options[0].text, options[1].text, options[0].action, options[1].action);
     }
 
     function leftPath() {
@@ -129,6 +133,33 @@
             document.getElementById('story').innerHTML = "你仔細觀察到陷阱的弱點，成功逃脫了困境──最強迷宮皇也是邊緣人！";
         }
         resetButtons();
+    }
+
+    // 新增選項
+    document.getElementById('addOptionButton').onclick = function() {
+        options.push({ text: "新增的選項", action: newOptionAction });
+        updateButtons(options[0].text, options[1].text, options[0].action, options[1].action);
+    };
+
+    // 刪除選項
+    document.getElementById('removeOptionButton').onclick = function() {
+        if (options.length > 2) {
+            options.pop();
+            updateButtons(options[0].text, options[1].text, options[0].action, options[1].action);
+        }
+    };
+
+    // 修改選項
+    document.getElementById('editOptionButton').onclick = function() {
+        if (options.length > 1) {
+            options[0].text = "修改後的選項";
+            updateButtons(options[0].text, options[1].text, options[0].action, options[1].action);
+        }
+    };
+
+    // 假設的新增選項行為
+    function newOptionAction() {
+        alert("這是新增的選項行為！");
     }
 
     // 初始化遊戲
