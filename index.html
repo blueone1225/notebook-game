@@ -86,21 +86,21 @@
     }
 
     function wealthOrWisdom(path) {
-        if (path === "left") {
-            document.getElementById('story').innerHTML = "你奮力一跳，成功逃脫了陷阱，獲得了自由！";
-        } else {
-            document.getElementById('story').innerHTML = "老人給了你一箱金子，恭喜你獲得了財富！";
-        }
-        resetButtons();
+        if (path === "給錢錢") {
+            document.getElementById('story').innerHTML = "老人給了你一箱珠寶.奇蛋.金子，恭喜你獲得了財富！";
+        } else if (path === "IQ200") {  // 用户选择了 'IQ200'
+        document.getElementById('story').innerHTML = "老人傳授給你一種千年古老的智慧，你的智慧大增！";
+    }
+    resetButtons();
     }
 
     function escapeTrap(path) {
-        if (path === "right") {
-            document.getElementById('story').innerHTML = "你仔細觀察到陷阱的弱點，成功逃脫了困境-最強迷宮皇也是邊緣人！";
-        } else {
-            document.getElementById('story').innerHTML = "老人傳授給你一種古老的智慧，你的智慧大增！";
-        }
-        resetButtons();
+       if (path === "Jump") {  // 用户选择了 'Jump'
+        document.getElementById('story').innerHTML = "你奮力一跳，成功逃脫了陷阱，獲得了自由！";
+    } else if (path === "左顧右盼") {  // 用户选择了 '左顧右盼'
+        document.getElementById('story').innerHTML = "你仔細觀察到陷阱的弱點，成功逃脫了困境-最強迷宮皇也是邊緣人！";
+    }
+    resetButtons();
     }
 
     function updateButtons(option1, option2) {
