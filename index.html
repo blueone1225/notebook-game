@@ -45,13 +45,13 @@
 <div class="game-container">
     <h1>平行時空異世界</h1>
     <div id="story" class="story-text">
-        歡迎來到文字冒險遊戲！
+        歡迎來到文字冒險遊戲！<br>
 在高中度過”邊緣人”生活的遙，上課時突然跟同班同學一起被召喚到異世界。 只要從外掛技能清單中選擇喜歡的技能，神明就會賜予你── 本來應該是這樣的，
 但外掛技能是先搶先贏，所以強勢技能都已經被同學們拿完了！？ 由於神明惱羞成怒，遙被硬塞了全部剩下的負面技能，還因為技能『邊緣人』的關係，到了異世界也只能孤單一人冒險……。 
 不依賴外掛，還要超越外掛── 最強”邊緣人”的異世界困難模式攻略譚，開幕！
     </div>
-    <button class="button" id="left-path">走左邊的道路</button>
-    <button class="button" id="right-path">走右邊的道路</button>
+    <button class="button" id="left-path">左邊遠遠有一人的道路</button>
+    <button class="button" id="right-path">右邊森林疑似有的道路</button>
 </div>
 
 <script>
@@ -76,29 +76,29 @@
     function leftPath() {
         currentStep = 1;
         document.getElementById('story').innerHTML = "你選擇了左邊的道路，走了幾分鐘後，你遇到了一位神秘的老人。<br>老人問你：'你是想要財富還是智慧？' 輸入 '財富' 或 '智慧'。";
-        updateButtons('財富', '智慧');
+        updateButtons('給錢錢', 'IQ200');
     }
 
     function rightPath() {
         currentStep = 1;
         document.getElementById('story').innerHTML = "你選擇了右邊的道路，走了一會兒，你發現自己陷入了一個陷阱。<br>你想用力跳出陷阱，還是靜下心來觀察？";
-        updateButtons('跳', '觀察');
+        updateButtons('Jump', '左顧右盼');
     }
 
     function wealthOrWisdom(path) {
         if (path === "left") {
             document.getElementById('story').innerHTML = "老人給了你一箱金子，恭喜你獲得了財富！";
         } else {
-            document.getElementById('story').innerHTML = "老人傳授給你一種古老的智慧，你的智慧大增！";
+            document.getElementById('story').innerHTML = "你奮力一跳，成功逃脫了陷阱，獲得了自由！";
         }
         resetButtons();
     }
 
     function escapeTrap(path) {
         if (path === "right") {
-            document.getElementById('story').innerHTML = "你奮力一跳，成功逃脫了陷阱，獲得了自由！";
-        } else {
             document.getElementById('story').innerHTML = "你仔細觀察到陷阱的弱點，成功逃脫了困境！";
+        } else {
+            document.getElementById('story').innerHTML = "老人傳授給你一種古老的智慧，你的智慧大增！";
         }
         resetButtons();
     }
