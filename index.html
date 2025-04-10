@@ -1,61 +1,49 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文字冒險遊戲</title>
-    <style>
-        body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background: #f0f8ff; }
-        .game-container { width: 60%; margin: 50px auto; text-align: center; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
-        .btn { padding: 10px 20px; font-size: 18px; margin: 10px; cursor: pointer; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
-        .btn:hover { background-color: #45a049; }
-        #story { font-size: 20px; }
-    </style>
-</head>
-<body>
+Sub StartGame()
+    Dim playerChoice As String
+    
+    ' 遊戲介紹
+    MsgBox "歡迎來到文字冒險遊戲！你正在進入一片神秘的森林，前方有兩條道路。"
+    
+    ' 第一階段：選擇道路
+    playerChoice = InputBox("你站在分岔路口。你要選擇走哪條路？" & vbCrLf & "輸入 '左' 或 '右'。", "選擇路徑")
+    
+    If playerChoice = "左" Then
+        LeftPath
+    ElseIf playerChoice = "右" Then
+        RightPath
+    Else
+        MsgBox "無效的選擇！遊戲結束。"
+    End If
+End Sub
 
-<div class="game-container">
-    <h1>歡迎來到文字冒險遊戲！</h1>
-    <p id="story">你正在進入一片神秘的森林，前方有兩條道路。</p>
-    <button class="btn" onclick="choosePath('left')">走左邊的道路</button>
-    <button class="btn" onclick="choosePath('right')">走右邊的道路</button>
-</div>
+Sub LeftPath()
+    Dim playerChoice As String
+    MsgBox "你選擇了左邊的道路，走了幾分鐘後，你遇到了一位神秘的老人。"
+    
+    ' 第二階段：與老人互動
+    playerChoice = InputBox("老人問你：'你是想要財富還是智慧？' " & vbCrLf & "輸入 '財富' 或 '智慧'。", "選擇你的目標")
+    
+    If playerChoice = "財富" Then
+        MsgBox "老人給了你一箱金子，恭喜你獲得了財富！"
+    ElseIf playerChoice = "智慧" Then
+        MsgBox "老人傳授給你一種古老的智慧，你的智慧大增！"
+    Else
+        MsgBox "無效的選擇！你迷失了方向，遊戲結束。"
+    End If
+End Sub
 
-<script>
-    let storyText = document.getElementById("story");
-
-    function choosePath(choice) {
-        if (choice === "left") {
-            storyText.innerHTML = "你選擇了左邊的道路，走了幾分鐘後，遇到了一位神秘的老人。";
-            document.querySelector('.game-container').innerHTML += `
-                <button class="btn" onclick="encounterOldMan('wealth')">選擇財富</button>
-                <button class="btn" onclick="encounterOldMan('wisdom')">選擇智慧</button>
-            `;
-        } else if (choice === "right") {
-            storyText.innerHTML = "你選擇了右邊的道路，走了一會兒，突然陷入了一個陷阱！";
-            document.querySelector('.game-container').innerHTML += `
-                <button class="btn" onclick="escapeTrap('jump')">用力跳出陷阱</button>
-                <button class="btn" onclick="escapeTrap('observe')">靜下心來觀察</button>
-            `;
-        }
-    }
-
-    function encounterOldMan(choice) {
-        if (choice === "wealth") {
-            storyText.innerHTML = "老人給了你一箱金子，恭喜你獲得了財富！";
-        } else if (choice === "wisdom") {
-            storyText.innerHTML = "老人傳授給你一種古老的智慧，你的智慧大增！";
-        }
-    }
-
-    function escapeTrap(choice) {
-        if (choice === "jump") {
-            storyText.innerHTML = "你奮力一跳，成功逃脫了陷阱！";
-        } else if (choice === "observe") {
-            storyText.innerHTML = "你仔細觀察到陷阱的弱點，成功逃脫！";
-        }
-    }
-</script>
-
-</body>
-</html>
+Sub RightPath()
+    Dim playerChoice As String
+    MsgBox "你選擇了右邊的道路，走了一會兒，你發現自己陷入了一個陷阱。"
+    
+    ' 第二階段：逃脫陷阱
+    playerChoice = InputBox("你想用力跳出陷阱，還是靜下心來觀察？" & vbCrLf & "輸入 '跳' 或 '觀察'。", "逃脫陷阱")
+    
+    If playerChoice = "跳" Then
+        MsgBox "你奮力一跳，成功逃脫了陷阱，獲得了自由！"
+    ElseIf playerChoice = "觀察" Then
+        MsgBox "你仔細觀察到陷阱的弱點，成功逃脫了困境！"
+    Else
+        MsgBox "無效的選擇！你無法逃脫，遊戲結束。"
+    End If
+End Sub
