@@ -144,6 +144,17 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
+
+    .victory-box {
+      background-color: #ffe082;
+      color: #4e342e;
+      padding: 15px 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px orange;
+      z-index: 99;
+      animation: pulse 2s infinite;
+      position: absolute;
+    }
   </style>
 </head>
 <body>
@@ -155,7 +166,7 @@
   <button onclick="respondToVisitor()">發送</button>
 </div>
 
-<div class="section">
+<div class="section" id="battleSection">
   <h3>⚔️ 來一棍</h3>
   <p>烏薩奇537血量：<span id="enemyHP">100</span> | 玩家血量：<span id="playerHP">100</span></p>
   <button onclick="battle('attack')">攻擊</button>
@@ -163,7 +174,9 @@
   <button onclick="battle('skill')">技能</button>
   <p id="battleLog"></p>
 </div>
+
 <div id="effectContainer" class="effect"></div>
+
 <script>
 let playerHP = 100, enemyHP = 100;
 
@@ -201,6 +214,8 @@ function battle(action) {
   document.getElementById("playerHP").innerText = Math.max(0, playerHP);
   log.innerText = msg + `\n烏薩奇537攻擊你造成 ${enemyAtk} 傷害！`;
   triggerRandomEffect();
+
+  if (enemyHP <= 0) showVictory();
 }
 
 function triggerRandomEffect() {
@@ -232,6 +247,20 @@ function triggerEffect(type) {
     document.body.classList.remove("shake");
     container.innerHTML = "";
   }, 1000);
+}
+
+function showVictory() {
+  const victoryBox = document.createElement("div");
+  victoryBox.className = "victory-box";
+  victoryBox.innerText = "你打敗了烏薩奇537！勝利啦！";
+
+  const battleSection = document.getElementById("battleSection");
+  const rect = battleSection.getBoundingClientRect();
+
+  victoryBox.style.left = rect.left + "px";
+  victoryBox.style.top = (rect.bottom + window.scrollY + 10) + "px";
+
+  document.body.appendChild(victoryBox);
 }
 </script>
 </body>
