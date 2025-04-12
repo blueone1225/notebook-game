@@ -2,8 +2,6 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>品格生技有限公司</title>
   <style>
     body {
@@ -117,11 +115,13 @@
 </div>
 
 <script>
+  // 修正商品初始化資料
   let options = JSON.parse(localStorage.getItem('options')) || [
     { name: "美膠囊買二送1限量50組", price: 1200, imageUrl: "https://via.placeholder.com/300x150?text=美膠囊" },
     { name: "基本組合 代謝美膠囊2盒+纖凍3盒", price: 2800, imageUrl: "https://via.placeholder.com/300x150?text=基本組合" },
     { name: "美纖凍買30送25", price: 1500, imageUrl: "https://via.placeholder.com/300x150?text=美纖凍" }
   ];
+
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
   let discountCodes = { SAVE10: 0.9, VIP20: 0.8 };
   let currentDiscount = 1;
