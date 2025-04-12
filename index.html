@@ -75,6 +75,7 @@
     Your browser does not support the audio element.
 </audio>
 
+
 <script>
     let currentStep = 0;
     const storyEl = document.getElementById('story');
@@ -107,8 +108,8 @@
 
     function startGame() {
         currentStep = 0;
-        typeWriter("歡迎來到品格生技有限公司工程冒險！你是一位生技工程師，剛加入了這個公司，接下來你需要做出選擇，推動公司業務發展。", () => {
-            updateButtons("參加生技產品開發", "參加國際貿易項目");
+        typeWriter("歡迎來到品格生技有限公司的工程冒險！你是一位生技公司的工程師，剛加入了品格生技有限公司，接下來你需要在工作中做出選擇，讓公司順利發展。", () => {
+            updateButtons("參加飲料批發業項目", "參加國際貿易業項目");
         });
     }
 
@@ -121,21 +122,35 @@
 
     leftButton.addEventListener('click', () => {
         const choice = leftButton.innerText;
-        if (currentStep === 0) biotechDevelopment();
-        else if (currentStep === 1) productResearch(choice);
-        else if (currentStep === 2) {
-            typeWriter("結束遊戲！", () => {});
+        if (currentStep === 0) {
+            equipmentInstallation();
+        } else if (currentStep === 1) {
+            equipmentSupport(choice);
         }
     });
 
     rightButton.addEventListener('click', () => {
         const choice = rightButton.innerText;
-        if (currentStep === 0) internationalTrade();
-        else if (currentStep === 1) tradeNegotiation(choice);
-        else if (currentStep === 2) {
-            typeWriter("結束遊戲！", () => {});
+        if (currentStep === 0) {
+            internationalTrade();
+        } else if (currentStep === 1) {
+            tradeNegotiation(choice);
         }
     });
+
+    function equipmentInstallation() {
+        currentStep = 1;
+        typeWriter("你選擇了參加飲料批發業項目，現在需要進行設備安裝。你會如何處理?", () => {
+            updateButtons("選擇自行安裝", "選擇委外安裝");
+        });
+    }
+
+    function internationalTrade() {
+        currentStep = 1;
+        typeWriter("你選擇了參加國際貿易業項目，你需要與國外公司進行談判。", () => {
+            updateButtons("選擇積極談判", "選擇保守談判");
+        });
+    }
 
     // Functions for managing items
     function addItem() {
@@ -180,6 +195,8 @@
     // Start the game
     startGame();
 </script>
+
+
 
 </body>
 </html>
