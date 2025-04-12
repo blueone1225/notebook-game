@@ -1,278 +1,157 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <title>品格生技有限公司</title>
-  <style>
-    body {
-      font-family: "微軟正黑體", sans-serif;
-      background-color: #f8e6f0;
-      background-image: url('https://images.unsplash.com/photo-1587602540626-0137354b5e0a');
-      background-size: cover;
-      background-attachment: fixed;
-      margin: 0;
-      padding: 0;
-      color: #6a4f58;
-    }
-    .game-container {
-      background-color: rgba(255, 228, 243, 0.95);
-      max-width: 800px;
-      margin: 60px auto;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-    .button {
-      background-color: #f1a7c7;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      margin: 5px 0;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-      text-align: center;
-    }
-    .button:hover {
-      background-color: #f08194;
-    }
-    .control-buttons {
-      margin-top: 20px;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .cart {
-      margin-top: 20px;
-      background-color: white;
-      padding: 10px;
-      border-radius: 8px;
-    }
-    .product {
-      margin-bottom: 15px;
-      text-align: center;
-    }
-    .product img {
-      max-width: 100%;
-      border-radius: 10px;
-      margin-bottom: 5px;
-    }
-    .checkout {
-      margin-top: 10px;
-      padding: 10px;
-      background-color: #fff0f5;
-      border-radius: 10px;
-    }
-    .admin-panel {
-      display: none;
-      margin-top: 20px;
-      padding: 10px;
-      background-color: #eee;
-      border-radius: 10px;
-    }
-    input[type="text"] {
-      padding: 5px;
-      font-size: 14px;
-      width: 100%;
-      margin-bottom: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misslin Official蜜絲琳 購物網</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #f7c7e3;
+            padding: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+        }
+        .product-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .product-item {
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .product-info img {
+            width: 100px;
+            height: auto;
+            border-radius: 5px;
+        }
+        .product-item button {
+            padding: 5px 10px;
+            background-color: #ff9900;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .product-item button:hover {
+            background-color: #e68a00;
+        }
+        .total {
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .cart-section {
+            margin-top: 30px;
+        }
+        .input-field {
+            padding: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 200px;
+        }
+    </style>
 </head>
 <body>
-
-<div class="game-container">
-  <h1>Misslin Official蜜絲琳 購物網</h1>
-  <div>
-    <label>請輸入顧客名稱：</label>
-    <input type="text" id="customer-name" placeholder="輸入姓名後 Enter" />
-    <p id="welcome-msg"></p>
-  </div>
-
-  <div id="options"></div>
-
-  <div class="control-buttons">
-    <button class="button" id="add-option">新增產品</button>
-    <button class="button" id="edit-option">編輯商品</button>
-    <button class="button" id="delete-option">刪除單品</button>
-    <button class="button" id="admin-login">後台</button>
-  </div>
-
-  <div class="cart">
-    <h3>購物車</h3>
-    <ul id="cart-list"></ul>
-    <div class="checkout">
-      <input type="text" id="discount-code" placeholder="輸入優惠碼（例如：SAVE10）" />
-      <p>總金額：<span id="total-amount">0</span> 元</p>
-      <button class="button" id="checkout">結帳</button>
+    <header>Misslin Official蜜絲琳 購物網</header>
+    <div class="container">
+        <div>
+            <label for="customer-name">請輸入顧客名稱：</label>
+            <input type="text" id="customer-name" class="input-field">
+        </div>
+        <div class="cart-section">
+            <h3>商品清單</h3>
+            <ul id="product-list" class="product-list"></ul>
+            <div>
+                <label for="discount-code">輸入優惠碼（例如：SAVE10）：</label>
+                <input type="text" id="discount-code" class="input-field">
+            </div>
+            <div class="total">
+                總金額：<span id="total-amount">0</span> 元
+            </div>
+            <button id="checkout-btn" class="input-field">結帳</button>
+        </div>
     </div>
-  </div>
 
-  <div class="admin-panel" id="admin-panel">
-    <h3>後台管理</h3>
-    <ul id="admin-products"></ul>
-  </div>
-</div>
+    <script>
+        let products = [
+            { name: "美膠囊買二送1限量50組", price: 1200, imageUrl: "https://via.placeholder.com/300x150?text=美膠囊" },
+            { name: "基本組合 代謝美膠囊2盒+纖凍3盒", price: 2800, imageUrl: "https://via.placeholder.com/300x150?text=基本組合" },
+            { name: "美纖凍買30送25", price: 1500, imageUrl: "https://via.placeholder.com/300x150?text=美纖凍" }
+        ];
+        let cart = [];
 
-<script>
-  // 修正商品初始化資料
-  let options = JSON.parse(localStorage.getItem('options')) || [
-    { name: "美膠囊買二送1限量50組", price: 1200, imageUrl: "https://via.placeholder.com/300x150?text=美膠囊" },
-    { name: "基本組合 代謝美膠囊2盒+纖凍3盒", price: 2800, imageUrl: "https://via.placeholder.com/300x150?text=基本組合" },
-    { name: "美纖凍買30送25", price: 1500, imageUrl: "https://via.placeholder.com/300x150?text=美纖凍" }
-  ];
+        const productList = document.getElementById('product-list');
+        const totalAmount = document.getElementById('total-amount');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const customerNameInput = document.getElementById('customer-name');
+        const discountCodeInput = document.getElementById('discount-code');
 
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-  let discountCodes = { SAVE10: 0.9, VIP20: 0.8 };
-  let currentDiscount = 1;
+        function updateProductList() {
+            productList.innerHTML = '';
+            products.forEach((product, index) => {
+                const li = document.createElement('li');
+                li.classList.add('product-item');
+                li.innerHTML = `
+                    <div class="product-info">
+                        <img src="${product.imageUrl}" alt="${product.name}">
+                        <div>[${index + 1}] ${product.name} - $${product.price}</div>
+                    </div>
+                    <button onclick="addToCart(${index})">加入購物車</button>
+                `;
+                productList.appendChild(li);
+            });
+        }
 
-  const optionsContainer = document.getElementById("options");
-  const cartList = document.getElementById("cart-list");
-  const totalAmountSpan = document.getElementById("total-amount");
-  const customerInput = document.getElementById("customer-name");
-  const welcomeMsg = document.getElementById("welcome-msg");
+        function updateTotal() {
+            let total = cart.reduce((sum, item) => sum + item.price, 0);
+            if (discountCodeInput.value === 'SAVE10') {
+                total *= 0.9;
+            }
+            totalAmount.innerText = total.toFixed(2);
+        }
 
-  function saveState() {
-    localStorage.setItem('options', JSON.stringify(options));
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }
+        function addToCart(index) {
+            const product = products[index];
+            if (product) {
+                cart.push(product);
+                updateTotal();
+            }
+        }
 
-  customerInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-      const name = customerInput.value.trim();
-      if (name) {
-        localStorage.setItem('customerName', name);
-        welcomeMsg.innerText = `歡迎，${name}！開始購物吧～`;
-      }
-    }
-  });
+        checkoutBtn.addEventListener('click', () => {
+            const customerName = customerNameInput.value.trim();
+            if (!customerName) {
+                alert('請輸入顧客名稱');
+                return;
+            }
+            if (cart.length === 0) {
+                alert('請先加入商品到購物車');
+                return;
+            }
+            alert(`感謝您的購物，${customerName}！您的總金額為：$${totalAmount.innerText}`);
+        });
 
-  const randomResponses = [
-    "你成功了！", "遇到挑戰，需要支援！", "獲得意外的機會！", "太棒了！"
-  ];
-
-  function renderOptions() {
-    optionsContainer.innerHTML = "";
-    options.forEach((product, index) => {
-      const wrapper = document.createElement("div");
-      wrapper.className = "product";
-
-      const img = document.createElement("img");
-      img.src = product.imageUrl || "https://via.placeholder.com/300x150";
-      wrapper.appendChild(img);
-
-      const btn = document.createElement("button");
-      btn.className = "button";
-      btn.innerText = `[${index}] ${product.name} - $${product.price}`;
-      btn.onclick = () => {
-        const response = randomResponses[Math.floor(Math.random() * randomResponses.length)];
-        alert(`${product.name}：${response}`);
-        cart.push(product);
-        updateCart();
-        saveState();
-      };
-      wrapper.appendChild(btn);
-      optionsContainer.appendChild(wrapper);
-    });
-  }
-
-  function updateCart() {
-    cartList.innerHTML = "";
-    let total = 0;
-    cart.forEach((item, i) => {
-      const li = document.createElement("li");
-      li.innerText = `${item.name} - $${item.price}`;
-      total += item.price;
-
-      const delBtn = document.createElement("button");
-      delBtn.innerText = "刪除";
-      delBtn.style.marginLeft = "10px";
-      delBtn.style.fontSize = "12px";
-      delBtn.onclick = () => {
-        cart.splice(i, 1);
-        updateCart();
-        saveState();
-      };
-      li.appendChild(delBtn);
-      cartList.appendChild(li);
-    });
-
-    total = Math.round(total * currentDiscount);
-    totalAmountSpan.innerText = total;
-  }
-
-  document.getElementById("add-option").onclick = () => {
-    const name = prompt("輸入商品名稱：");
-    const price = parseInt(prompt("輸入商品價格（數字）："), 10);
-    const imageUrl = prompt("輸入商品圖片網址：");
-    if (name && !isNaN(price)) {
-      options.push({ name, price, imageUrl });
-      renderOptions();
-      saveState();
-    }
-  };
-
-  document.getElementById("edit-option").onclick = () => {
-    const index = parseInt(prompt("輸入要編輯的商品編號（從 0 開始）："));
-    if (!isNaN(index) && options[index]) {
-      const newName = prompt("輸入新名稱：", options[index].name);
-      const newPrice = parseInt(prompt("輸入新價格：", options[index].price), 10);
-      const newImage = prompt("輸入新圖片網址：", options[index].imageUrl);
-      if (newName && !isNaN(newPrice)) {
-        options[index] = { name: newName, price: newPrice, imageUrl: newImage };
-        renderOptions();
-        saveState();
-      }
-    }
-  };
-
-  document.getElementById("delete-option").onclick = () => {
-    const index = parseInt(prompt("輸入要刪除的商品編號："));
-    if (!isNaN(index) && options[index]) {
-      options.splice(index, 1);
-      renderOptions();
-      saveState();
-    }
-  };
-
-  document.getElementById("checkout").onclick = () => {
-    if (cart.length === 0) return alert("購物車是空的！");
-    const code = document.getElementById("discount-code").value.trim();
-    if (code && discountCodes[code]) {
-      currentDiscount = discountCodes[code];
-      alert(`優惠碼 ${code} 套用成功！已享 ${Math.round((1 - currentDiscount) * 100)}% 折扣！`);
-    } else if (code) {
-      alert("無效的優惠碼！");
-      return;
-    }
-    updateCart();
-    alert(`感謝購買！總金額為 ${totalAmountSpan.innerText} 元`);
-    cart = [];
-    updateCart();
-    saveState();
-  };
-
-  document.getElementById("admin-login").onclick = () => {
-    const pwd = prompt("請輸入後台密碼：");
-    if (pwd === "admin123") {
-      const panel = document.getElementById("admin-panel");
-      panel.style.display = "block";
-      const list = document.getElementById("admin-products");
-      list.innerHTML = "";
-      options.forEach((item, i) => {
-        const li = document.createElement("li");
-        li.innerText = `【${i}】${item.name} - $${item.price}`;
-        list.appendChild(li);
-      });
-    } else {
-      alert("密碼錯誤！");
-    }
-  };
-
-  // 初始化畫面
-  renderOptions();
-  updateCart();
-</script>
-
+        updateProductList();
+    </script>
 </body>
 </html>
