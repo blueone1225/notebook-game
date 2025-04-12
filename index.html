@@ -1,65 +1,185 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>新增選項按鍵功能</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>品格生技有限公司工程冒險</title>
   <style>
-    body { font-family: sans-serif; background: #fff4f4; padding: 20px; }
-    .button { padding: 10px; background: #f08080; color: white; border: none; margin-top: 10px; cursor: pointer; }
-    .option-button {
-      display: block;
-      width: 100%;
-      margin: 5px 0;
-      padding: 10px;
-      background-color: #ffb6c1;
-      color: #333;
+    body {
+      font-family: "微軟正黑體", sans-serif;
+      background-color: #f8e6f0;
+      background-image: url('https://images.unsplash.com/photo-1587602540626-0137354b5e0a');
+      background-size: cover;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 0;
+      color: #6a4f58;
+    }
+    .game-container {
+      background-color: rgba(255, 228, 243, 0.95);
+      max-width: 700px;
+      margin: 60px auto;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .button {
+      background-color: #f1a7c7;
+      color: white;
       border: none;
+      padding: 12px 24px;
+      margin: 10px 5px;
+      font-size: 16px;
       border-radius: 6px;
       cursor: pointer;
-      text-align: left;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      text-align: center;
     }
-    #option-list {
+    .button:hover {
+      background-color: #f08194;
+    }
+    .story-text {
+      font-size: 18px;
+      line-height: 1.6;
+      min-height: 150px;
+    }
+    .control-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .control-buttons button {
+      width: 30%;
+    }
+    .option-buttons {
       margin-top: 20px;
     }
   </style>
 </head>
 <body>
+  <div class="game-container">
+    <h1>品格生技有限公司工程冒險</h1>
+    <div id="story" class="story-text"></div>
 
-<h2>新增選項（按鈕可點）</h2>
-<button class="button" onclick="addItem()">新增選項</button>
-<div id="option-list">目前沒有選項。</div>
+    <div class="option-buttons" id="option-buttons"></div>
 
-<script>
-  const items = [];
+    <div class="control-buttons">
+      <button class="button" id="add-item">新增項目</button>
+      <button class="button" id="edit-item">編輯項目</button>
+      <button class="button" id="delete-item">刪除項目</button>
+    </div>
+  </div>
 
-  function updateOptionList() {
-    const listEl = document.getElementById("option-list");
-    if (items.length === 0) {
-      listEl.innerHTML = "目前沒有選項。";
-      return;
+  <audio id="bg-music" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/12/04/audio_6642b32b69.mp3" type="audio/mp3" />
+  </audio>
+
+  <script>
+    const storyEl = document.getElementById('story');
+    const optionButtonsEl = document.getElementById('option-buttons');
+    const addItemButton = document.getElementById('add-item');
+    const editItemButton = document.getElementById('edit-item');
+    const deleteItemButton = document.getElementById('delete-item');
+    const audio = document.getElementById('bg-music');
+
+    let options = [];
+
+    window.onload = () => {
+      audio.play();
+      startGame();
+    };
+
+    function typeWriter(text, callback) {
+      let i = 0;
+      storyEl.innerHTML = "";
+      const interval = setInterval(() => {
+        storyEl.innerHTML += text.charAt(i);
+        i++;
+        if (i >= text.length) {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, 40);
     }
 
-    listEl.innerHTML = "";
-    items.forEach((item, index) => {
-      const btn = document.createElement("button");
-      btn.className = "option-button";
-      btn.textContent = `${index + 1}. ${item}`;
-      btn.onclick = () => {
-        alert(`你點了選項：${item}`);
-        // 可在這裡加跳轉劇情、改變故事流程等邏輯
-      };
-      listEl.appendChild(btn);
-    });
-  }
-
-  function addItem() {
-    const newItem = prompt("輸入新選項內容：");
-    if (newItem && newItem.trim() !== "") {
-      items.push(newItem.trim());
-      updateOptionList(); // 馬上更新畫面
+    function startGame() {
+      typeWriter("歡迎來到品格生技有限公司的工程冒險！你是一位剛加入的工程師，現在開始你的旅程。", () => {
+        renderOptions();
+      });
     }
-  }
-</script>
 
+    function renderOptions() {
+      optionButtonsEl.innerHTML = "";
+      options.forEach((option, index) => {
+        const btn = document.createElement("button");
+        btn.className = "button";
+        btn.textContent = option;
+        btn.addEventListener("click", () => {
+          alert(`你選擇了：「${option}」`);
+          // 未來可擴充更多分支
+        });
+        optionButtonsEl.appendChild(btn);
+      });
+    }
+
+    function addItem() {
+      const newItem = prompt("請輸入新的項目名稱：");
+      if (newItem) {
+        options.push(newItem);
+        renderOptions();
+      }
+    }
+
+    function editItem() {
+      if (options.length === 0) return alert("目前沒有任何項目可編輯");
+      const index = prompt("請輸入要編輯的項目編號 (0 ~ " + (options.length - 1) + ")：");
+      if (index !== null && !isNaN(index) && index >= 0 && index < options.length) {
+        const newLabel = prompt("請輸入新的項目名稱：", options[index]);
+        if (newLabel) {
+          options[index] = newLabel;
+          renderOptions();
+        }
+      } else {
+        alert("無效的編號！");
+      }
+    }
+
+    function deleteItem() {
+      if (options.length === 0) return alert("目前沒有任何項目可刪除");
+      const index = prompt("請輸入要刪除的項目編號 (0 ~ " + (options.length - 1) + ")：");
+      if (index !== null && !isNaN(index) && index >= 0 && index < options.length) {
+        options.splice(index, 1);
+        renderOptions();
+      } else {
+        alert("無效的編號！");
+      }
+    }
+
+    addItemButton.addEventListener("click", addItem);
+    editItemButton.addEventListener("click", editItem);
+    deleteItemButton.addEventListener("click", deleteItem);
+
+    btn.addEventListener("click", () => {
+  const messages = [
+    "你獲得了一項技術突破！",
+    "你在茶水間聽到一個驚人的消息。",
+    "主管對你的表現很滿意，給了你升遷機會。",
+    "你不小心把樣本打翻了，被迫重做。",
+    "你成功跟國際廠商簽下一筆大單！",
+    "系統出現錯誤，需要你加班解決。",
+    "你在會議中提出的點子被採納了！",
+    "你誤信了同事的謠言，導致判斷錯誤。",
+    "你發現一份遺失的機密報告...",
+    "一位神秘人物邀請你參加一個秘密項目。"
+  ];
+  const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+  alert(randomMessage);
+});
+
+
+    
+    
+  </script>
 </body>
 </html>
