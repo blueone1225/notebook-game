@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZ搜公司工程冒險</title>
+    <title>品格生技有限公司工程冒險</title>
     <style>
         body {
             font-family: "微軟正黑體", sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #fdf6e3;
-            color: #4e3b2c;
-            background-image: url('https://images.unsplash.com/photo-1526481280690-902a44eeb2c6');
+            background-color: #f8e6f0;
+            color: #6a4f58;
+            background-image: url('https://images.unsplash.com/photo-1587602540626-0137354b5e0a');
             background-size: cover;
             background-attachment: fixed;
         }
         .game-container {
-            background-color: rgba(255, 248, 220, 0.95);
+            background-color: rgba(255, 228, 243, 0.95);
             max-width: 700px;
             margin: 60px auto;
             padding: 30px;
@@ -24,7 +24,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         .button {
-            background-color: #d4a55d;
+            background-color: #f1a7c7;
             color: white;
             border: none;
             padding: 12px 24px;
@@ -37,7 +37,7 @@
             text-align: center;
         }
         .button:hover {
-            background-color: #b97b2f;
+            background-color: #f08194;
         }
         .story-text {
             font-size: 18px;
@@ -57,7 +57,7 @@
 <body>
 
 <div class="game-container">
-    <h1>EZ搜公司工程冒險</h1>
+    <h1>品格生技有限公司工程冒險</h1>
     <div id="story" class="story-text"></div>
     <button class="button" id="left-path"></button>
     <button class="button" id="right-path"></button>
@@ -107,8 +107,8 @@
 
     function startGame() {
         currentStep = 0;
-        typeWriter("歡迎來到EZ搜公司工程冒險！你是一位工程師，剛加入了圖昀坦工程行，接下來你需要在工作中做出選擇，讓公司順利發展。", () => {
-            updateButtons("參加設備安裝項目", "參加國際貿易項目");
+        typeWriter("歡迎來到品格生技有限公司工程冒險！你是一位生技工程師，剛加入了這個公司，接下來你需要做出選擇，推動公司業務發展。", () => {
+            updateButtons("參加生技產品開發", "參加國際貿易項目");
         });
     }
 
@@ -121,8 +121,8 @@
 
     leftButton.addEventListener('click', () => {
         const choice = leftButton.innerText;
-        if (currentStep === 0) equipmentInstallation();
-        else if (currentStep === 1) equipmentSupport(choice);
+        if (currentStep === 0) biotechDevelopment();
+        else if (currentStep === 1) productResearch(choice);
         else if (currentStep === 2) {
             typeWriter("結束遊戲！", () => {});
         }
