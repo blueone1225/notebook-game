@@ -75,7 +75,6 @@
     Your browser does not support the audio element.
 </audio>
 
-
 <script>
     let currentStep = 0;
     const storyEl = document.getElementById('story');
@@ -126,6 +125,12 @@
             equipmentInstallation();
         } else if (currentStep === 1) {
             equipmentSupport(choice);
+        } else if (currentStep === 2) {
+            handlePromotionChoice(choice);
+        } else if (currentStep === 3) {
+            handleProblemHandling(choice);
+        } else if (currentStep === 4) {
+            handleAgreementChoice(choice);
         }
     });
 
@@ -135,6 +140,12 @@
             internationalTrade();
         } else if (currentStep === 1) {
             tradeNegotiation(choice);
+        } else if (currentStep === 2) {
+            handlePromotionChoice(choice);
+        } else if (currentStep === 3) {
+            handleProblemHandling(choice);
+        } else if (currentStep === 4) {
+            handleAgreementChoice(choice);
         }
     });
 
@@ -150,6 +161,32 @@
         typeWriter("你選擇了參加國際貿易業項目，你需要與國外公司進行談判。", () => {
             updateButtons("選擇積極談判", "選擇保守談判");
         });
+    }
+
+    function equipmentSupport(choice) {
+        currentStep = 2;
+        if (choice === "選擇自行安裝") {
+            typeWriter("你選擇了自行安裝設備。經過一段時間，你成功完成了設備安裝並開始運行。公司決定給予你升遷！", () => {
+                updateButtons("接受升遷", "拒絕升遷");
+            });
+        } else if (choice === "選擇委外安裝") {
+            typeWriter("你選擇了委外安裝設備。外包商安裝時遇到了一些問題，導致項目延遲，客戶有些不滿。", () => {
+                updateButtons("處理問題", "忽視問題");
+            });
+        }
+    }
+
+    function tradeNegotiation(choice) {
+        currentStep = 2;
+        if (choice === "選擇積極談判") {
+            typeWriter("你選擇了積極談判，成功達成了雙方的合作協議，為公司帶來了豐厚的收益！", () => {
+                updateButtons("慶祝成功", "繼續工作");
+            });
+        } else if (choice === "選擇保守談判") {
+            typeWriter("你選擇了保守談判，雖然達成了協議，但條件較差，公司收入較低。", () => {
+                updateButtons("改善協議", "繼續現有協議");
+            });
+        }
     }
 
     // Functions for managing items
@@ -195,8 +232,6 @@
     // Start the game
     startGame();
 </script>
-
-
 
 </body>
 </html>
