@@ -1,116 +1,153 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>動態冒險遊戲</title>
-    <style>
-        body {
-            font-family: "微軟正黑體", sans-serif;
-            background-color: #f5f5f5;
-            padding: 20px;
-        }
-        .game-container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 700px;
-            margin: auto;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .story-text {
-            margin-bottom: 20px;
-        }
-        .option-button {
-            display: block;
-            width: 100%;
-            margin: 5px 0;
-            padding: 10px;
-            background: #ffc107;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .control-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .cart {
-            margin-top: 30px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background: #f9f9f9;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>品格生技有限公司工程系統</title>
+  <style>
+    body {
+      font-family: "微軟正黑體", sans-serif;
+      background-color: #f8e6f0;
+      background-image: url('https://images.unsplash.com/photo-1587602540626-0137354b5e0a');
+      background-size: cover;
+      background-attachment: fixed;
+      margin: 0;
+      padding: 0;
+      color: #6a4f58;
+    }
+    .game-container {
+      background-color: rgba(255, 228, 243, 0.95);
+      max-width: 700px;
+      margin: 60px auto;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .button {
+      background-color: #f1a7c7;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px 0;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+    .button:hover {
+      background-color: #f08194;
+    }
+    .control-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .cart {
+      margin-top: 20px;
+      background-color: white;
+      padding: 10px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
 
 <div class="game-container">
-    <h2>工程冒險遊戲</h2>
-    <div id="story" class="story-text">請新增選項開始冒險！</div>
-    <div id="options"></div>
-
-    <div class="control-buttons">
-        <button onclick="addOption()" class="option-button">新增選項</button>
-        <button onclick="clearOptions()" class="option-button">清除所有選項</button>
-        <button onclick="addToCart()" class="option-button">加入購物車</button>
-    </div>
-
-    <div class="cart" id="cart">
-        <strong>購物車：</strong>
-        <ul id="cart-list"></ul>
-    </div>
+  <h1>品格生技有限公司工程系統</h1>
+  <div id="options"></div>
+  <div class="control-buttons">
+    <button class="button" id="add-option">新增選項</button>
+    <button class="button" id="edit-option">編輯選項</button>
+    <button class="button" id="delete-option">刪除選項</button>
+  </div>
+  <div class="cart">
+    <h3>購物車</h3>
+    <ul id="cart-list"></ul>
+  </div>
 </div>
 
 <script>
-    const optionsDiv = document.getElementById('options');
-    const cartList = document.getElementById('cart-list');
-    let cart = [];
-    const randomResponses = [
-        "你遇到了一隻會說話的熊。",
-        "你發現了一個寶箱。",
-        "你被傳送到一個異世界。",
-        "你不小心按到紅色按鈕，引發警報。",
-        "你獲得了一瓶神秘藥水。"
-    ];
+  let options = JSON.parse(localStorage.getItem('options')) || ["參加設備工程", "洽談國際合作"];
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-    function addOption() {
-        const text = prompt("請輸入選項內容：");
-        if (!text) return;
+  const optionsContainer = document.getElementById("options");
+  const cartList = document.getElementById("cart-list");
 
-        const button = document.createElement('button');
-        button.innerText = text;
-        button.className = 'option-button';
-        button.onclick = () => {
-            const random = randomResponses[Math.floor(Math.random() * randomResponses.length)];
-            alert(random);
-        };
-        optionsDiv.appendChild(button);
+  const randomResponses = [
+    "你成功了！",
+    "遇到挑戰，需要支援！",
+    "獲得意外的合作機會！",
+    "流程順利完成！"
+  ];
+
+  function saveState() {
+    localStorage.setItem('options', JSON.stringify(options));
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
+
+  function renderOptions() {
+    optionsContainer.innerHTML = "";
+    options.forEach((text, index) => {
+      const btn = document.createElement("button");
+      btn.className = "button";
+      btn.innerText = text;
+      btn.onclick = () => {
+        const response = randomResponses[Math.floor(Math.random() * randomResponses.length)];
+        alert(`${text}：${response}`);
+        cart.push(text);
+        updateCart();
+        saveState();
+      };
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  function updateCart() {
+    cartList.innerHTML = "";
+    cart.forEach((item, i) => {
+      const li = document.createElement("li");
+      li.innerText = item;
+      cartList.appendChild(li);
+    });
+  }
+
+  document.getElementById("add-option").onclick = () => {
+    const newText = prompt("輸入新選項文字：");
+    if (newText) {
+      options.push(newText);
+      renderOptions();
+      saveState();
     }
+  };
 
-    function clearOptions() {
-        optionsDiv.innerHTML = '';
+  document.getElementById("edit-option").onclick = () => {
+    const index = prompt("輸入要編輯的選項編號（從 0 開始）：");
+    if (index !== null && index >= 0 && index < options.length) {
+      const newText = prompt("輸入新的選項內容：", options[index]);
+      if (newText) {
+        options[index] = newText;
+        renderOptions();
+        saveState();
+      }
+    } else {
+      alert("無效的選項編號");
     }
+  };
 
-    function addToCart() {
-        const item = prompt("輸入你要加入購物車的商品名稱：");
-        if (item) {
-            cart.push(item);
-            renderCart();
-        }
+  document.getElementById("delete-option").onclick = () => {
+    const index = prompt("輸入要刪除的選項編號（從 0 開始）：");
+    if (index !== null && index >= 0 && index < options.length) {
+      options.splice(index, 1);
+      renderOptions();
+      saveState();
+    } else {
+      alert("無效的選項編號");
     }
+  };
 
-    function renderCart() {
-        cartList.innerHTML = '';
-        cart.forEach((item, index) => {
-            const li = document.createElement('li');
-            li.innerText = `${index + 1}. ${item}`;
-            cartList.appendChild(li);
-        });
-    }
+  renderOptions();
+  updateCart();
 </script>
 
 </body>
