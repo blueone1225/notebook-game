@@ -52,6 +52,14 @@
         .control-buttons button {
             width: 30%;
         }
+        .item-list {
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            padding: 10px;
+            background-color: rgba(255, 228, 243, 0.85);
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +75,9 @@
         <button class="button" id="edit-item">編輯項目</button>
         <button class="button" id="delete-item">刪除項目</button>
     </div>
+
+    <!-- Item List Display -->
+    <div id="item-list" class="item-list"></div>
 </div>
 
 <!-- Background Music -->
@@ -84,6 +95,7 @@
     const addItemButton = document.getElementById('add-item');
     const editItemButton = document.getElementById('edit-item');
     const deleteItemButton = document.getElementById('delete-item');
+    const itemListEl = document.getElementById('item-list');
 
     let items = [];
 
@@ -126,12 +138,6 @@
             equipmentInstallation();
         } else if (currentStep === 1) {
             equipmentSupport(choice);
-        } else if (currentStep === 2) {
-            handlePromotionChoice(choice);
-        } else if (currentStep === 3) {
-            handleProblemHandling(choice);
-        } else if (currentStep === 4) {
-            handleAgreementChoice(choice);
         }
     });
 
@@ -141,12 +147,6 @@
             internationalTrade();
         } else if (currentStep === 1) {
             tradeNegotiation(choice);
-        } else if (currentStep === 2) {
-            handlePromotionChoice(choice);
-        } else if (currentStep === 3) {
-            handleProblemHandling(choice);
-        } else if (currentStep === 4) {
-            handleAgreementChoice(choice);
         }
     });
 
@@ -191,12 +191,18 @@
     }
 
     // Functions for managing items
+    function updateItemList() {
+        itemListEl.innerHTML = "<strong>當前項目列表:</strong><br>" + items.map((item, index) => {
+            return `${index}. ${item}`;
+        }).join("<br>");
+    }
+
     function addItem() {
         const newItem = prompt("請輸入新的項目名稱：");
         if (newItem) {
             items.push(newItem);
             alert(`新增項目: ${newItem}`);
-            console.log(items);
+            updateItemList(); // 更新項目顯示
         }
     }
 
@@ -207,7 +213,7 @@
             if (newItem) {
                 items[itemIndex] = newItem;
                 alert(`已編輯項目: ${newItem}`);
-                console.log(items);
+                updateItemList(); // 更新項目顯示
             }
         } else {
             alert("無效的項目編號！");
@@ -219,7 +225,7 @@
         if (itemIndex >= 0 && itemIndex < items.length) {
             const removedItem = items.splice(itemIndex, 1);
             alert(`已刪除項目: ${removedItem}`);
-            console.log(items);
+            updateItemList(); // 更新項目顯示
         } else {
             alert("無效的項目編號！");
         }
