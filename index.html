@@ -67,7 +67,8 @@
   </div>
 </div>
 
-<script>
+
+ <script>
   let options = JSON.parse(localStorage.getItem('options')) || ["參加設備工程", "洽談國際合作"];
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -108,8 +109,36 @@
     cart.forEach((item, i) => {
       const li = document.createElement("li");
       li.innerText = item;
+      const delBtn = document.createElement("button");
+      delBtn.innerText = "刪除";
+      delBtn.style.marginLeft = "10px";
+      delBtn.style.fontSize = "12px";
+      delBtn.onclick = () => {
+        cart.splice(i, 1);
+        updateCart();
+        saveState();
+      };
+      li.appendChild(delBtn);
       cartList.appendChild(li);
     });
+
+    if (cart.length > 0 && !document.getElementById("clear-cart")) {
+      const clearBtn = document.createElement("button");
+      clearBtn.id = "clear-cart";
+      clearBtn.className = "button";
+      clearBtn.style.backgroundColor = "#999";
+      clearBtn.innerText = "清空購物車";
+      clearBtn.onclick = () => {
+        if (confirm("確定要清空購物車？")) {
+          cart = [];
+          updateCart();
+          saveState();
+        }
+      };
+      document.querySelector(".cart").appendChild(clearBtn);
+    } else if (cart.length === 0 && document.getElementById("clear-cart")) {
+      document.getElementById("clear-cart").remove();
+    }
   }
 
   document.getElementById("add-option").onclick = () => {
@@ -149,6 +178,7 @@
   renderOptions();
   updateCart();
 </script>
+
 
 </body>
 </html>
