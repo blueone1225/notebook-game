@@ -90,6 +90,7 @@
     // Play music when the game starts
     window.onload = () => {
         audio.play();
+        startGame();
     };
 
     function typeWriter(text, callback) {
@@ -229,8 +230,6 @@
     editItemButton.addEventListener('click', editItem);
     deleteItemButton.addEventListener('click', deleteItem);
 
-    // Start the game
-    startGame();
 </script>
 
 </body>
