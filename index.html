@@ -10,6 +10,7 @@
       color: #5d4037;
       padding: 20px;
       overflow: hidden;
+      position: relative;
     }
     h3 {
       color: #ff9800;
@@ -21,7 +22,7 @@
       border-radius: 10px;
       background: #fff3e0;
       position: relative;
-      z-index: 10;
+      z-index: 5;
     }
     button {
       background-color: #ffcc80;
@@ -41,67 +42,114 @@
       border-radius: 5px;
       border: 1px solid #ccc;
     }
-    .effect-layer {
-      position: fixed;
+    .effect {
+      position: absolute;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
       pointer-events: none;
-      z-index: 20;
+      z-index: 10;
     }
-    .raindrop, .snowflake, .flame, .lightning-flash {
+    .raindrop, .snowflake, .particle {
       position: absolute;
-      pointer-events: none;
+      border-radius: 50%;
+      animation-timing-function: linear;
     }
     .raindrop {
       width: 2px;
-      height: 15px;
-      background: #2196f3;
-      animation: fall 1s linear infinite;
+      height: 10px;
+      background: rgba(0,0,255,0.6);
+      animation: drop 1s infinite;
+    }
+    @keyframes drop {
+      0% {transform: translateY(-100px); opacity: 1;}
+      100% {transform: translateY(100vh); opacity: 0;}
     }
     .snowflake {
-      font-size: 24px;
-      color: white;
-      animation: snow 3s linear infinite;
-    }
-    .flame {
       width: 10px;
       height: 10px;
-      background: radial-gradient(orange, transparent);
-      border-radius: 50%;
-      opacity: 0.6;
-      animation: flicker 0.8s infinite ease-in-out;
-    }
-    .lightning-flash {
-      width: 100vw;
-      height: 100vh;
-      background: rgba(255,255,255,0.8);
-      animation: flash 0.3s ease-in-out;
-    }
-    @keyframes fall {
-      0% {transform: translateY(-20px);}
-      100% {transform: translateY(100vh);}
+      background: white;
+      opacity: 0.8;
+      animation: snow 4s linear infinite;
     }
     @keyframes snow {
-      0% {transform: translateY(-30px);}
-      100% {transform: translateY(100vh);}
+      0% {transform: translateY(0px) rotate(0deg);}
+      100% {transform: translateY(100vh) rotate(360deg);}
     }
-    @keyframes flicker {
-      0%, 100% {opacity: 0.3; transform: scale(1);}
-      50% {opacity: 0.8; transform: scale(1.4);}
+    .lightning {
+      background: white;
+      opacity: 0.9;
+      animation: flash 0.2s;
     }
     @keyframes flash {
-      0% {opacity: 0.8;}
-      100% {opacity: 0;}
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+    .flame {
+      background: radial-gradient(circle, rgba(255,100,0,0.6) 0%, rgba(255,0,0,0.3) 70%);
+      animation: burn 0.5s ease-out;
+    }
+    @keyframes burn {
+      from { transform: scale(0.5); opacity: 1; }
+      to { transform: scale(2); opacity: 0; }
+    }
+    .vortex {
+      background: radial-gradient(circle, rgba(0,255,255,0.5), transparent);
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% {transform: rotate(0deg);}
+      100% {transform: rotate(360deg);}
+    }
+    .aura {
+      background: radial-gradient(circle, rgba(255,255,0,0.3), transparent);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    .teleport {
+      background: radial-gradient(circle, rgba(0,255,255,0.5), transparent);
+      animation: zoom 0.6s ease-in-out;
+    }
+    @keyframes zoom {
+      0% { transform: scale(0.5); opacity: 1; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+    .explode {
+      background: radial-gradient(circle, orange, transparent);
+      animation: explode 0.4s ease-out;
+    }
+    @keyframes explode {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+    .shake {
+      animation: shake 0.3s;
+    }
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-10px, 5px); }
+      50% { transform: translate(10px, -5px); }
+      75% { transform: translate(-5px, 5px); }
+      100% { transform: translate(0, 0); }
+    }
+    .rune {
+      background: radial-gradient(circle, rgba(128,0,255,0.3), transparent);
+      animation: rotateRune 2s linear infinite;
+    }
+    @keyframes rotateRune {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-<div class="effect-layer" id="effectLayer"></div>
 
 <div class="section">
-  <h3>🐰 烏薩奇 對話框</h3>
+  <h3> 🥕🐰 烏薩奇 對話框</h3>
   <div id="npcDialog">烏薩奇回應你：「WUlaaaaaaaa」</div>
   <input type="text" id="visitorInput" placeholder="跟烏薩奇說點什麼...">
   <button onclick="respondToVisitor()">發送</button>
@@ -115,94 +163,76 @@
   <button onclick="battle('skill')">技能</button>
   <p id="battleLog"></p>
 </div>
-
+<div id="effectContainer" class="effect"></div>
 <script>
-  let playerHP = 100, enemyHP = 100;
+let playerHP = 100, enemyHP = 100;
 
-  function respondToVisitor() {
-    const input = document.getElementById("visitorInput").value.trim();
-    if (!input) return;
-    const replies = ["五啦。", "一壓哈～", "蛤？", "yeeeeee.", "WUlaaaaaaaa。"];
-    const randomReply = replies[Math.floor(Math.random() * replies.length)];
-    document.getElementById("npcDialog").innerText = `烏薩奇回應你：「${randomReply}」`;
-    document.getElementById("visitorInput").value = "";
-    triggerRandomEffect();
+function respondToVisitor() {
+  const input = document.getElementById("visitorInput").value.trim();
+  if (input.length === 0) return;
+  const replies = ["五啦。", "一壓哈～", "蛤？", "yeeeeee.", "WUlaaaaaaaa。"];
+  const randomReply = replies[Math.floor(Math.random() * replies.length)];
+  document.getElementById("npcDialog").innerText = `烏薩奇回應你：「${randomReply}」`;
+  document.getElementById("visitorInput").value = "";
+  triggerRandomEffect();
+}
+
+function battle(action) {
+  const log = document.getElementById("battleLog");
+  let msg = "";
+  if (action === "attack") {
+    const dmg = Math.floor(Math.random() * 20 + 5);
+    enemyHP -= dmg;
+    msg = `你攻擊烏薩奇537造成 ${dmg} 傷害！`;
+    triggerEffect("flame");
+  } else if (action === "defend") {
+    msg = "你進入防禦姿態，減少下一次傷害。";
+    triggerEffect("aura");
+  } else if (action === "skill") {
+    const crit = Math.random() < 0.3;
+    const dmg = crit ? 50 : 25;
+    enemyHP -= dmg;
+    msg = `你使用技能造成 ${dmg} 傷害${crit ? "（暴擊！）" : ""}`;
+    triggerEffect("rune");
   }
+  const enemyAtk = Math.floor(Math.random() * 15);
+  playerHP -= enemyAtk;
+  document.getElementById("enemyHP").innerText = Math.max(0, enemyHP);
+  document.getElementById("playerHP").innerText = Math.max(0, playerHP);
+  log.innerText = msg + `\n烏薩奇537攻擊你造成 ${enemyAtk} 傷害！`;
+  triggerRandomEffect();
+}
 
-  function battle(action) {
-    const log = document.getElementById("battleLog");
-    let msg = "";
-    if (action === "attack") {
-      const dmg = Math.floor(Math.random() * 20 + 5);
-      enemyHP -= dmg;
-      msg = `你攻擊烏薩奇537造成 ${dmg} 傷害！`;
-    } else if (action === "defend") {
-      msg = "你進入防禦姿態，減少下一次傷害。";
-    } else if (action === "skill") {
-      const crit = Math.random() < 0.3;
-      const dmg = crit ? 50 : 25;
-      enemyHP -= dmg;
-      msg = `你使用技能造成 ${dmg} 傷害${crit ? "（暴擊！）" : ""}`;
-    }
-    const enemyAtk = Math.floor(Math.random() * 15);
-    playerHP -= enemyAtk;
-    document.getElementById("enemyHP").innerText = Math.max(0, enemyHP);
-    document.getElementById("playerHP").innerText = Math.max(0, playerHP);
-    log.innerText = msg + `\n烏薩奇537攻擊你造成 ${enemyAtk} 傷害！`;
-    triggerRandomEffect();
-  }
+function triggerRandomEffect() {
+  const effects = ["raindrop", "snowflake", "flame", "lightning", "vortex", "aura", "teleport", "explode", "shake", "rune"];
+  const choice = effects[Math.floor(Math.random() * effects.length)];
+  triggerEffect(choice);
+}
 
-  function triggerRandomEffect() {
-    const effectLayer = document.getElementById("effectLayer");
-    effectLayer.innerHTML = "";
-    const effects = [createRain, createSnow, createFlames, createLightning];
-    const randomEffect = effects[Math.floor(Math.random() * effects.length)];
-    randomEffect();
-  }
-
-  function createRain() {
-    const layer = document.getElementById("effectLayer");
-    for (let i = 0; i < 80; i++) {
+function triggerEffect(type) {
+  const container = document.getElementById("effectContainer");
+  container.innerHTML = "";
+  if (["raindrop", "snowflake", "particle"].includes(type)) {
+    for (let i = 0; i < 40; i++) {
       const drop = document.createElement("div");
-      drop.className = "raindrop";
-      drop.style.left = Math.random() * window.innerWidth + "px";
-      drop.style.top = Math.random() * window.innerHeight + "px";
-      layer.appendChild(drop);
+      drop.className = type;
+      drop.style.left = Math.random() * 100 + "vw";
+      drop.style.top = Math.random() * -100 + "px";
+      container.appendChild(drop);
     }
+  } else {
+    const effect = document.createElement("div");
+    effect.className = type;
+    effect.style.width = "100vw";
+    effect.style.height = "100vh";
+    container.appendChild(effect);
+    if (type === "shake") document.body.classList.add("shake");
   }
-
-  function createSnow() {
-    const layer = document.getElementById("effectLayer");
-    for (let i = 0; i < 40; i++) {
-      const snow = document.createElement("div");
-      snow.className = "snowflake";
-      snow.innerText = "❄";
-      snow.style.left = Math.random() * window.innerWidth + "px";
-      snow.style.top = Math.random() * window.innerHeight + "px";
-      layer.appendChild(snow);
-    }
-  }
-
-  function createFlames() {
-    const layer = document.getElementById("effectLayer");
-    for (let i = 0; i < 40; i++) {
-      const flame = document.createElement("div");
-      flame.className = "flame";
-      flame.style.left = Math.random() * window.innerWidth + "px";
-      flame.style.top = Math.random() * window.innerHeight + "px";
-      layer.appendChild(flame);
-    }
-  }
-
-  function createLightning() {
-    const layer = document.getElementById("effectLayer");
-    const flash = document.createElement("div");
-    flash.className = "lightning-flash";
-    layer.appendChild(flash);
-    setTimeout(() => {
-      if (flash && flash.parentElement) flash.remove();
-    }, 300);
-  }
+  setTimeout(() => {
+    document.body.classList.remove("shake");
+    container.innerHTML = "";
+  }, 1000);
+}
 </script>
 </body>
 </html>
