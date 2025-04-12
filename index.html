@@ -1,241 +1,41 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>品格生技有限公司工程冒險</title>
-    <style>
-        body {
-            font-family: "微軟正黑體", sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8e6f0;
-            color: #6a4f58;
-            background-image: url('https://images.unsplash.com/photo-1587602540626-0137354b5e0a');
-            background-size: cover;
-            background-attachment: fixed;
-        }
-        .game-container {
-            background-color: rgba(255, 228, 243, 0.95);
-            max-width: 700px;
-            margin: 60px auto;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        .button {
-            background-color: #f1a7c7;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            margin: 10px 5px;
-            font-size: 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            text-align: center;
-        }
-        .button:hover {
-            background-color: #f08194;
-        }
-        .story-text {
-            font-size: 18px;
-            line-height: 1.6;
-            min-height: 150px;
-        }
-        .control-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .control-buttons button {
-            width: 30%;
-        }
-        .item-list {
-            margin-top: 20px;
-            font-size: 16px;
-            line-height: 1.6;
-            padding: 10px;
-            background-color: rgba(255, 228, 243, 0.85);
-            border-radius: 8px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>測試新增選項顯示</title>
+  <style>
+    body { font-family: sans-serif; background: #fff4f4; padding: 20px; }
+    .button { padding: 10px; background: #f08080; color: white; border: none; margin-top: 10px; cursor: pointer; }
+    #item-list { margin-top: 20px; background: #ffecec; padding: 10px; border-radius: 6px; }
+  </style>
 </head>
 <body>
 
-<div class="game-container">
-    <h1>品格生技有限公司工程冒險</h1>
-    <div id="story" class="story-text"></div>
-    <button class="button" id="left-path"></button>
-    <button class="button" id="right-path"></button>
-
-    <div class="control-buttons">
-        <button class="button" id="add-item">新增項目</button>
-        <button class="button" id="edit-item">編輯項目</button>
-        <button class="button" id="delete-item">刪除項目</button>
-    </div>
-
-    <!-- Item List Display -->
-    <div id="item-list" class="item-list"></div>
-</div>
-
-<!-- Background Music -->
-<audio id="bg-music" loop>
-    <source src="https://cdn.pixabay.com/audio/2022/12/04/audio_6642b32b69.mp3" type="audio/mp3">
-    Your browser does not support the audio element.
-</audio>
+<h2>新增項目測試</h2>
+<button class="button" onclick="addItem()">新增項目</button>
+<div id="item-list">目前沒有項目。</div>
 
 <script>
-    let currentStep = 0;
-    const storyEl = document.getElementById('story');
-    const audio = document.getElementById('bg-music');
-    const leftButton = document.getElementById('left-path');
-    const rightButton = document.getElementById('right-path');
-    const addItemButton = document.getElementById('add-item');
-    const editItemButton = document.getElementById('edit-item');
-    const deleteItemButton = document.getElementById('delete-item');
-    const itemListEl = document.getElementById('item-list');
+  const items = [];
 
-    let items = [];
-
-    // Play music when the game starts
-    window.onload = () => {
-        audio.play();
-        startGame();
-    };
-
-    function typeWriter(text, callback) {
-        let i = 0;
-        storyEl.innerHTML = "";
-        const interval = setInterval(() => {
-            storyEl.innerHTML += text.charAt(i);
-            i++;
-            if (i >= text.length) {
-                clearInterval(interval);
-                if (callback) callback();
-            }
-        }, 40);
+  function updateItemList() {
+    const itemListEl = document.getElementById("item-list");
+    if (items.length === 0) {
+      itemListEl.innerHTML = "目前沒有項目。";
+    } else {
+      itemListEl.innerHTML = "<strong>目前項目:</strong><br>" + items.map((item, index) => `${index}: ${item}`).join("<br>");
     }
+    console.log("更新項目列表：", items); // 除錯用
+  }
 
-    function startGame() {
-        currentStep = 0;
-        typeWriter("歡迎來到品格生技有限公司的工程冒險！你是一位生技公司的工程師，剛加入了品格生技有限公司，接下來你需要在工作中做出選擇，讓公司順利發展。", () => {
-            updateButtons("參加飲料批發業項目", "參加國際貿易業項目");
-        });
+  function addItem() {
+    const newItem = prompt("輸入新項目名稱：");
+    if (newItem && newItem.trim() !== "") {
+      items.push(newItem.trim());
+      alert(`新增項目：${newItem}`);
+      updateItemList(); // 立即更新畫面
     }
-
-    function updateButtons(text1, text2) {
-        leftButton.innerText = text1;
-        rightButton.innerText = text2;
-        leftButton.style.display = 'inline-block';
-        rightButton.style.display = 'inline-block';
-    }
-
-    leftButton.addEventListener('click', () => {
-        const choice = leftButton.innerText;
-        if (currentStep === 0) {
-            equipmentInstallation();
-        } else if (currentStep === 1) {
-            equipmentSupport(choice);
-        }
-    });
-
-    rightButton.addEventListener('click', () => {
-        const choice = rightButton.innerText;
-        if (currentStep === 0) {
-            internationalTrade();
-        } else if (currentStep === 1) {
-            tradeNegotiation(choice);
-        }
-    });
-
-    function equipmentInstallation() {
-        currentStep = 1;
-        typeWriter("你選擇了參加飲料批發業項目，現在需要進行設備安裝。你會如何處理?", () => {
-            updateButtons("選擇自行安裝", "選擇委外安裝");
-        });
-    }
-
-    function internationalTrade() {
-        currentStep = 1;
-        typeWriter("你選擇了參加國際貿易業項目，你需要與國外公司進行談判。", () => {
-            updateButtons("選擇積極談判", "選擇保守談判");
-        });
-    }
-
-    function equipmentSupport(choice) {
-        currentStep = 2;
-        if (choice === "選擇自行安裝") {
-            typeWriter("你選擇了自行安裝設備。經過一段時間，你成功完成了設備安裝並開始運行。公司決定給予你升遷！", () => {
-                updateButtons("接受升遷", "拒絕升遷");
-            });
-        } else if (choice === "選擇委外安裝") {
-            typeWriter("你選擇了委外安裝設備。外包商安裝時遇到了一些問題，導致項目延遲，客戶有些不滿。", () => {
-                updateButtons("處理問題", "忽視問題");
-            });
-        }
-    }
-
-    function tradeNegotiation(choice) {
-        currentStep = 2;
-        if (choice === "選擇積極談判") {
-            typeWriter("你選擇了積極談判，成功達成了雙方的合作協議，為公司帶來了豐厚的收益！", () => {
-                updateButtons("慶祝成功", "繼續工作");
-            });
-        } else if (choice === "選擇保守談判") {
-            typeWriter("你選擇了保守談判，雖然達成了協議，但條件較差，公司收入較低。", () => {
-                updateButtons("改善協議", "繼續現有協議");
-            });
-        }
-    }
-
-    // Functions for managing items
-    function updateItemList() {
-        itemListEl.innerHTML = "<strong>當前項目列表:</strong><br>" + items.map((item, index) => {
-            return `${index}. ${item}`;
-        }).join("<br>");
-    }
-
-    function addItem() {
-        const newItem = prompt("請輸入新的項目名稱：");
-        if (newItem) {
-            items.push(newItem);
-            alert(`新增項目: ${newItem}`);
-            updateItemList(); // 更新項目顯示
-        }
-    }
-
-    function editItem() {
-        const itemIndex = prompt("請輸入要編輯的項目編號 (0 - " + (items.length - 1) + "):");
-        if (itemIndex >= 0 && itemIndex < items.length) {
-            const newItem = prompt("請輸入新的項目名稱：", items[itemIndex]);
-            if (newItem) {
-                items[itemIndex] = newItem;
-                alert(`已編輯項目: ${newItem}`);
-                updateItemList(); // 更新項目顯示
-            }
-        } else {
-            alert("無效的項目編號！");
-        }
-    }
-
-    function deleteItem() {
-        const itemIndex = prompt("請輸入要刪除的項目編號 (0 - " + (items.length - 1) + "):");
-        if (itemIndex >= 0 && itemIndex < items.length) {
-            const removedItem = items.splice(itemIndex, 1);
-            alert(`已刪除項目: ${removedItem}`);
-            updateItemList(); // 更新項目顯示
-        } else {
-            alert("無效的項目編號！");
-        }
-    }
-
-    // Event listeners for the control buttons
-    addItemButton.addEventListener('click', addItem);
-    editItemButton.addEventListener('click', editItem);
-    deleteItemButton.addEventListener('click', deleteItem);
-
+  }
 </script>
 
 </body>
