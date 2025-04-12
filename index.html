@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -40,6 +38,96 @@
       border-radius: 5px;
       border: 1px solid #ccc;
     }
+    /* 攻擊動畫 */
+    .attackEffect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      color: #ff5722;
+      text-shadow: 0 0 20px #ffcc80, 0 0 30px #ff5722;
+      animation: attackAnim 2s ease-out forwards;
+    }
+    /* 防禦動畫 */
+    .defendEffect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      color: #4caf50;
+      text-shadow: 0 0 15px #4caf50, 0 0 25px #81c784;
+      animation: defendAnim 2s ease-out forwards;
+    }
+    /* 技能動畫 */
+    .skillEffect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 30px;
+      color: #2196f3;
+      text-shadow: 0 0 15px #ffcc80, 0 0 25px #2196f3;
+      animation: skillAnim 2s ease-out forwards;
+    }
+    
+    @keyframes attackAnim {
+      0% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      30% {
+        transform: translate(-50%, -50%) scale(1.2) rotate(10deg);
+        opacity: 1;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.4) rotate(-10deg);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes defendAnim {
+      0% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      25% {
+        transform: translate(-50%, -50%) scale(1.1) rotate(10deg);
+        opacity: 0.9;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.3) rotate(-10deg);
+        opacity: 0.7;
+      }
+      75% {
+        transform: translate(-50%, -50%) scale(1.1) rotate(10deg);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes skillAnim {
+      0% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.5) rotate(15deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -79,13 +167,31 @@
       const dmg = Math.floor(Math.random() * 20 + 5);
       enemyHP -= dmg;
       msg = `你攻擊烏薩奇537造成 ${dmg} 傷害！`;
+      // 加入攻擊動畫效果
+      const attackEffect = document.createElement("div");
+      attackEffect.classList.add("attackEffect");
+      attackEffect.innerText = "攻擊！";
+      document.body.appendChild(attackEffect);
+      setTimeout(() => attackEffect.remove(), 2000);  // 延長動畫顯示時間
     } else if (action === "defend") {
       msg = "你進入防禦姿態，減少下一次傷害。";
+      // 加入防禦動畫效果
+      const defendEffect = document.createElement("div");
+      defendEffect.classList.add("defendEffect");
+      defendEffect.innerText = "防禦！";
+      document.body.appendChild(defendEffect);
+      setTimeout(() => defendEffect.remove(), 2000);  // 延長動畫顯示時間
     } else if (action === "skill") {
       const crit = Math.random() < 0.3;
       const dmg = crit ? 50 : 25;
       enemyHP -= dmg;
       msg = `你使用技能造成 ${dmg} 傷害${crit ? "（暴擊！）" : ""}`;
+      // 顯示技能動畫
+      const skillEffect = document.createElement("div");
+      skillEffect.classList.add("skillEffect");
+      skillEffect.innerText = "技能發動！";
+      document.body.appendChild(skillEffect);
+      setTimeout(() => skillEffect.remove(), 2000);  // 延長動畫顯示時間
     }
     const enemyAtk = Math.floor(Math.random() * 15);
     playerHP -= enemyAtk;
