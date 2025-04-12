@@ -10,7 +10,6 @@
       color: #5d4037;
       padding: 20px;
       overflow: hidden;
-      position: relative; /* 确保动画不被遮挡 */
     }
     h3 {
       color: #ff9800;
@@ -21,6 +20,8 @@
       padding: 15px;
       border-radius: 10px;
       background: #fff3e0;
+      position: relative;
+      z-index: 10;
     }
     button {
       background-color: #ffcc80;
@@ -40,150 +41,64 @@
       border-radius: 5px;
       border: 1px solid #ccc;
     }
-
-    /* 火焰粒子特效 */
-    .fireEffect {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 30px;
-      color: #ff5722;
-      text-shadow: 0 0 15px #ffcc80, 0 0 25px #ff5722;
-      animation: fireAnim 3s ease-out forwards;
-      z-index: 999;
-    }
-
-    @keyframes fireAnim {
-      0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-      }
-      30% {
-        transform: translate(-50%, -50%) scale(1.2);
-        opacity: 0.8;
-      }
-      50% {
-        transform: translate(-50%, -50%) scale(1.5);
-        opacity: 0.6;
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0;
-      }
-    }
-
-    /* 雪花效果 */
-    .snow {
-      position: absolute;
+    .effect-layer {
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       pointer-events: none;
-      z-index: -1;
+      z-index: 20;
     }
-    .snowflake {
+    .raindrop, .snowflake, .flame, .lightning-flash {
       position: absolute;
-      top: -10px;
-      background: #fff;
-      border-radius: 50%;
-      width: 5px;
-      height: 5px;
-      animation: snowfall 10s linear infinite;
-    }
-    @keyframes snowfall {
-      0% {
-        transform: translateX(0) translateY(0);
-      }
-      100% {
-        transform: translateX(100px) translateY(100vh);
-      }
-    }
-
-    /* 雨滴效果 */
-    .rain {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
       pointer-events: none;
-      z-index: -1;
     }
     .raindrop {
-      position: absolute;
-      top: -10px;
-      background: #00bcd4;
       width: 2px;
-      height: 10px;
-      animation: rainfall 1s linear infinite;
+      height: 15px;
+      background: #2196f3;
+      animation: fall 1s linear infinite;
     }
-    @keyframes rainfall {
-      0% {
-        transform: translateY(0);
-      }
-      100% {
-        transform: translateY(100vh);
-      }
-    }
-
-    /* 雷电效果 */
-    .lightning {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
-      opacity: 0;
-      animation: lightningStrike 3s infinite;
-    }
-    @keyframes lightningStrike {
-      0% {
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-        background-color: rgba(255, 255, 255, 0.7); /* 使闪电效果更柔和 */
-      }
-      100% {
-        opacity: 0;
-      }
-    }
-
-    /* 攻擊、技能動畫 */
-    .attackAnimation, .defendAnimation, .skillAnimation {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+    .snowflake {
       font-size: 24px;
-      font-weight: bold;
-      color: #ff9800;
-      animation: attackSkillAnim 1.5s ease-out forwards;
-      z-index: 999;
+      color: white;
+      animation: snow 3s linear infinite;
     }
-
-    @keyframes attackSkillAnim {
-      0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: translate(-50%, -50%) scale(1.2);
-        opacity: 0.8;
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0;
-      }
+    .flame {
+      width: 10px;
+      height: 10px;
+      background: radial-gradient(orange, transparent);
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: flicker 0.8s infinite ease-in-out;
     }
-
+    .lightning-flash {
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255,255,255,0.8);
+      animation: flash 0.3s ease-in-out;
+    }
+    @keyframes fall {
+      0% {transform: translateY(-20px);}
+      100% {transform: translateY(100vh);}
+    }
+    @keyframes snow {
+      0% {transform: translateY(-30px);}
+      100% {transform: translateY(100vh);}
+    }
+    @keyframes flicker {
+      0%, 100% {opacity: 0.3; transform: scale(1);}
+      50% {opacity: 0.8; transform: scale(1.4);}
+    }
+    @keyframes flash {
+      0% {opacity: 0.8;}
+      100% {opacity: 0;}
+    }
   </style>
 </head>
 <body>
+<div class="effect-layer" id="effectLayer"></div>
 
 <div class="section">
   <h3>🐰 烏薩奇 對話框</h3>
@@ -204,126 +119,90 @@
 <script>
   let playerHP = 100, enemyHP = 100;
 
-  // 添加雪花效果
-  const snowContainer = document.createElement('div');
-  snowContainer.classList.add('snow');
-  document.body.appendChild(snowContainer);
-
-  function createSnowflakes() {
-    for (let i = 0; i < 50; i++) {
-      const snowflake = document.createElement('div');
-      snowflake.classList.add('snowflake');
-      snowflake.style.left = `${Math.random() * 100}vw`;
-      snowflake.style.animationDuration = `${Math.random() * 10 + 5}s`;
-      snowContainer.appendChild(snowflake);
-    }
-  }
-
-  // 添加雨滴效果
-  const rainContainer = document.createElement('div');
-  rainContainer.classList.add('rain');
-  document.body.appendChild(rainContainer);
-
-  function createRaindrops() {
-    for (let i = 0; i < 100; i++) {
-      const raindrop = document.createElement('div');
-      raindrop.classList.add('raindrop');
-      raindrop.style.left = `${Math.random() * 100}vw`;
-      raindrop.style.animationDuration = `${Math.random() * 1 + 0.5}s`;
-      rainContainer.appendChild(raindrop);
-    }
-  }
-
-  // 添加雷电效果
-  const lightningContainer = document.createElement('div');
-  lightningContainer.classList.add('lightning');
-  document.body.appendChild(lightningContainer);
-
-  // 随机触发效果
-  function triggerRandomEffect() {
-    // 清除旧特效
-    document.querySelectorAll('.snowflake, .raindrop').forEach((el) => el.remove());
-    document.querySelectorAll('.fireEffect').forEach((el) => el.remove());
-
-    const randomEffect = Math.floor(Math.random() * 4);  // 改为4，确保包括所有特效
-    if (randomEffect === 0) {
-      createSnowflakes();
-    } else if (randomEffect === 1) {
-      createRaindrops();
-    } else if (randomEffect === 2) {
-      createLightningEffect();
-    } else {
-      createFireEffect();
-    }
-  }
-
-  // 雷电效果函数
-  function createLightningEffect() {
-    const lightning = document.createElement('div');
-    lightning.classList.add('lightning');
-    document.body.appendChild(lightning);
-  }
-
-  // 火焰特效
-  function createFireEffect() {
-    const fireEffect = document.createElement("div");
-    fireEffect.classList.add("fireEffect");
-    fireEffect.innerText = "火焰爆發！";
-    document.body.appendChild(fireEffect);
-    setTimeout(() => fireEffect.remove(), 3000);  // 延長動畫顯示時間
-  }
-
-  // 攻擊、防禦、技能動畫
-  function battle(action) {
-    const log = document.getElementById("battleLog");
-    let msg = "";
-
-    // 清除可能的旧动画
-    document.querySelectorAll('.attackAnimation, .defendAnimation, .skillAnimation').forEach((el) => el.remove());
-
-    if (action === "attack") {
-      const attackAnim = document.createElement("div");
-      attackAnim.classList.add("attackAnimation");
-      attackAnim.innerText = "攻擊！";
-      document.body.appendChild(attackAnim);
-      setTimeout(() => attackAnim.remove(), 1500);
-
-      const dmg = Math.floor(Math.random() * 20 + 10);
-      enemyHP -= dmg;
-      msg = `你造成了 ${dmg} 點傷害！`;
-
-    } else if (action === "defend") {
-      const defendAnim = document.createElement("div");
-      defendAnim.classList.add("defendAnimation");
-      defendAnim.innerText = "防禦！";
-      document.body.appendChild(defendAnim);
-      setTimeout(() => defendAnim.remove(), 1500);
-
-      msg = "你成功防禦了攻擊！";
-
-    } else if (action === "skill") {
-      const skillAnim = document.createElement("div");
-      skillAnim.classList.add("skillAnimation");
-      skillAnim.innerText = "技能！";
-      document.body.appendChild(skillAnim);
-      setTimeout(() => skillAnim.remove(), 1500);
-
-      const skillDmg = Math.floor(Math.random() * 40 + 20);
-      enemyHP -= skillDmg;
-      msg = `你使用技能造成了 ${skillDmg} 點傷害！`;
-    }
-
-    document.getElementById("enemyHP").textContent = enemyHP;
-    log.textContent = msg;
-
-    // 随机触发背景效果
+  function respondToVisitor() {
+    const input = document.getElementById("visitorInput").value.trim();
+    if (!input) return;
+    const replies = ["五啦。", "一壓哈～", "蛤？", "yeeeeee.", "WUlaaaaaaaa。"];
+    const randomReply = replies[Math.floor(Math.random() * replies.length)];
+    document.getElementById("npcDialog").innerText = `烏薩奇回應你：「${randomReply}」`;
+    document.getElementById("visitorInput").value = "";
     triggerRandomEffect();
   }
 
-  // 初始加载时触发特效
-  createRaindrops();
-  setInterval(triggerRandomEffect, 5000);
-</script>
+  function battle(action) {
+    const log = document.getElementById("battleLog");
+    let msg = "";
+    if (action === "attack") {
+      const dmg = Math.floor(Math.random() * 20 + 5);
+      enemyHP -= dmg;
+      msg = `你攻擊烏薩奇537造成 ${dmg} 傷害！`;
+    } else if (action === "defend") {
+      msg = "你進入防禦姿態，減少下一次傷害。";
+    } else if (action === "skill") {
+      const crit = Math.random() < 0.3;
+      const dmg = crit ? 50 : 25;
+      enemyHP -= dmg;
+      msg = `你使用技能造成 ${dmg} 傷害${crit ? "（暴擊！）" : ""}`;
+    }
+    const enemyAtk = Math.floor(Math.random() * 15);
+    playerHP -= enemyAtk;
+    document.getElementById("enemyHP").innerText = Math.max(0, enemyHP);
+    document.getElementById("playerHP").innerText = Math.max(0, playerHP);
+    log.innerText = msg + `\n烏薩奇537攻擊你造成 ${enemyAtk} 傷害！`;
+    triggerRandomEffect();
+  }
 
+  function triggerRandomEffect() {
+    const effectLayer = document.getElementById("effectLayer");
+    effectLayer.innerHTML = "";
+    const effects = [createRain, createSnow, createFlames, createLightning];
+    const randomEffect = effects[Math.floor(Math.random() * effects.length)];
+    randomEffect();
+  }
+
+  function createRain() {
+    const layer = document.getElementById("effectLayer");
+    for (let i = 0; i < 80; i++) {
+      const drop = document.createElement("div");
+      drop.className = "raindrop";
+      drop.style.left = Math.random() * window.innerWidth + "px";
+      drop.style.top = Math.random() * window.innerHeight + "px";
+      layer.appendChild(drop);
+    }
+  }
+
+  function createSnow() {
+    const layer = document.getElementById("effectLayer");
+    for (let i = 0; i < 40; i++) {
+      const snow = document.createElement("div");
+      snow.className = "snowflake";
+      snow.innerText = "❄";
+      snow.style.left = Math.random() * window.innerWidth + "px";
+      snow.style.top = Math.random() * window.innerHeight + "px";
+      layer.appendChild(snow);
+    }
+  }
+
+  function createFlames() {
+    const layer = document.getElementById("effectLayer");
+    for (let i = 0; i < 40; i++) {
+      const flame = document.createElement("div");
+      flame.className = "flame";
+      flame.style.left = Math.random() * window.innerWidth + "px";
+      flame.style.top = Math.random() * window.innerHeight + "px";
+      layer.appendChild(flame);
+    }
+  }
+
+  function createLightning() {
+    const layer = document.getElementById("effectLayer");
+    const flash = document.createElement("div");
+    flash.className = "lightning-flash";
+    layer.appendChild(flash);
+    setTimeout(() => {
+      if (flash && flash.parentElement) flash.remove();
+    }, 300);
+  }
+</script>
 </body>
 </html>
