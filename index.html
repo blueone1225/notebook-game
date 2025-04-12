@@ -9,6 +9,8 @@
       background-color: #fff8e1;
       color: #5d4037;
       padding: 20px;
+      overflow: hidden;
+      position: relative; /* 确保动画不被遮挡 */
     }
     h3 {
       color: #ff9800;
@@ -38,96 +40,147 @@
       border-radius: 5px;
       border: 1px solid #ccc;
     }
-    /* 攻擊動畫 */
-    .attackEffect {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 24px;
-      color: #ff5722;
-      text-shadow: 0 0 20px #ffcc80, 0 0 30px #ff5722;
-      animation: attackAnim 2s ease-out forwards;
-    }
-    /* 防禦動畫 */
-    .defendEffect {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 24px;
-      color: #4caf50;
-      text-shadow: 0 0 15px #4caf50, 0 0 25px #81c784;
-      animation: defendAnim 2s ease-out forwards;
-    }
-    /* 技能動畫 */
-    .skillEffect {
+
+    /* 火焰粒子特效 */
+    .fireEffect {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       font-size: 30px;
-      color: #2196f3;
-      text-shadow: 0 0 15px #ffcc80, 0 0 25px #2196f3;
-      animation: skillAnim 2s ease-out forwards;
+      color: #ff5722;
+      text-shadow: 0 0 15px #ffcc80, 0 0 25px #ff5722;
+      animation: fireAnim 3s ease-out forwards;
+      z-index: 999;
     }
-    
-    @keyframes attackAnim {
+
+    @keyframes fireAnim {
       0% {
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        transform: translate(-50%, -50%) scale(1);
         opacity: 1;
       }
       30% {
-        transform: translate(-50%, -50%) scale(1.2) rotate(10deg);
-        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.8;
       }
       50% {
-        transform: translate(-50%, -50%) scale(1.4) rotate(-10deg);
-        opacity: 0.7;
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0.6;
       }
       100% {
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        transform: translate(-50%, -50%) scale(1);
         opacity: 0;
       }
     }
 
-    @keyframes defendAnim {
+    /* 雪花效果 */
+    .snow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .snowflake {
+      position: absolute;
+      top: -10px;
+      background: #fff;
+      border-radius: 50%;
+      width: 5px;
+      height: 5px;
+      animation: snowfall 10s linear infinite;
+    }
+    @keyframes snowfall {
       0% {
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
-        opacity: 1;
-      }
-      25% {
-        transform: translate(-50%, -50%) scale(1.1) rotate(10deg);
-        opacity: 0.9;
-      }
-      50% {
-        transform: translate(-50%, -50%) scale(1.3) rotate(-10deg);
-        opacity: 0.7;
-      }
-      75% {
-        transform: translate(-50%, -50%) scale(1.1) rotate(10deg);
-        opacity: 0.9;
+        transform: translateX(0) translateY(0);
       }
       100% {
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        transform: translateX(100px) translateY(100vh);
+      }
+    }
+
+    /* 雨滴效果 */
+    .rain {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .raindrop {
+      position: absolute;
+      top: -10px;
+      background: #00bcd4;
+      width: 2px;
+      height: 10px;
+      animation: rainfall 1s linear infinite;
+    }
+    @keyframes rainfall {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(100vh);
+      }
+    }
+
+    /* 雷电效果 */
+    .lightning {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0;
+      animation: lightningStrike 3s infinite;
+    }
+    @keyframes lightningStrike {
+      0% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+        background-color: rgba(255, 255, 255, 0.7); /* 使闪电效果更柔和 */
+      }
+      100% {
         opacity: 0;
       }
     }
 
-    @keyframes skillAnim {
+    /* 攻擊、技能動畫 */
+    .attackAnimation, .defendAnimation, .skillAnimation {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      font-weight: bold;
+      color: #ff9800;
+      animation: attackSkillAnim 1.5s ease-out forwards;
+      z-index: 999;
+    }
+
+    @keyframes attackSkillAnim {
       0% {
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        transform: translate(-50%, -50%) scale(1);
         opacity: 1;
       }
       50% {
-        transform: translate(-50%, -50%) scale(1.5) rotate(15deg);
+        transform: translate(-50%, -50%) scale(1.2);
         opacity: 0.8;
       }
       100% {
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        transform: translate(-50%, -50%) scale(1);
         opacity: 0;
       }
     }
+
   </style>
 </head>
 <body>
@@ -151,54 +204,125 @@
 <script>
   let playerHP = 100, enemyHP = 100;
 
-  function respondToVisitor() {
-    const input = document.getElementById("visitorInput").value.trim();
-    if (input.length === 0) return;
-    const replies = ["五啦。", "一壓哈～", "蛤？", "yeeeeee.", "WUlaaaaaaaa。"];
-    const randomReply = replies[Math.floor(Math.random() * replies.length)];
-    document.getElementById("npcDialog").innerText = `烏薩奇回應你：「${randomReply}」`;
-    document.getElementById("visitorInput").value = "";
+  // 添加雪花效果
+  const snowContainer = document.createElement('div');
+  snowContainer.classList.add('snow');
+  document.body.appendChild(snowContainer);
+
+  function createSnowflakes() {
+    for (let i = 0; i < 50; i++) {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      snowflake.style.left = `${Math.random() * 100}vw`;
+      snowflake.style.animationDuration = `${Math.random() * 10 + 5}s`;
+      snowContainer.appendChild(snowflake);
+    }
   }
 
+  // 添加雨滴效果
+  const rainContainer = document.createElement('div');
+  rainContainer.classList.add('rain');
+  document.body.appendChild(rainContainer);
+
+  function createRaindrops() {
+    for (let i = 0; i < 100; i++) {
+      const raindrop = document.createElement('div');
+      raindrop.classList.add('raindrop');
+      raindrop.style.left = `${Math.random() * 100}vw`;
+      raindrop.style.animationDuration = `${Math.random() * 1 + 0.5}s`;
+      rainContainer.appendChild(raindrop);
+    }
+  }
+
+  // 添加雷电效果
+  const lightningContainer = document.createElement('div');
+  lightningContainer.classList.add('lightning');
+  document.body.appendChild(lightningContainer);
+
+  // 随机触发效果
+  function triggerRandomEffect() {
+    // 清除旧特效
+    document.querySelectorAll('.snowflake, .raindrop').forEach((el) => el.remove());
+    document.querySelectorAll('.fireEffect').forEach((el) => el.remove());
+
+    const randomEffect = Math.floor(Math.random() * 4);  // 改为4，确保包括所有特效
+    if (randomEffect === 0) {
+      createSnowflakes();
+    } else if (randomEffect === 1) {
+      createRaindrops();
+    } else if (randomEffect === 2) {
+      createLightningEffect();
+    } else {
+      createFireEffect();
+    }
+  }
+
+  // 雷电效果函数
+  function createLightningEffect() {
+    const lightning = document.createElement('div');
+    lightning.classList.add('lightning');
+    document.body.appendChild(lightning);
+  }
+
+  // 火焰特效
+  function createFireEffect() {
+    const fireEffect = document.createElement("div");
+    fireEffect.classList.add("fireEffect");
+    fireEffect.innerText = "火焰爆發！";
+    document.body.appendChild(fireEffect);
+    setTimeout(() => fireEffect.remove(), 3000);  // 延長動畫顯示時間
+  }
+
+  // 攻擊、防禦、技能動畫
   function battle(action) {
     const log = document.getElementById("battleLog");
     let msg = "";
+
+    // 清除可能的旧动画
+    document.querySelectorAll('.attackAnimation, .defendAnimation, .skillAnimation').forEach((el) => el.remove());
+
     if (action === "attack") {
-      const dmg = Math.floor(Math.random() * 20 + 5);
+      const attackAnim = document.createElement("div");
+      attackAnim.classList.add("attackAnimation");
+      attackAnim.innerText = "攻擊！";
+      document.body.appendChild(attackAnim);
+      setTimeout(() => attackAnim.remove(), 1500);
+
+      const dmg = Math.floor(Math.random() * 20 + 10);
       enemyHP -= dmg;
-      msg = `你攻擊烏薩奇537造成 ${dmg} 傷害！`;
-      // 加入攻擊動畫效果
-      const attackEffect = document.createElement("div");
-      attackEffect.classList.add("attackEffect");
-      attackEffect.innerText = "攻擊！";
-      document.body.appendChild(attackEffect);
-      setTimeout(() => attackEffect.remove(), 2000);  // 延長動畫顯示時間
+      msg = `你造成了 ${dmg} 點傷害！`;
+
     } else if (action === "defend") {
-      msg = "你進入防禦姿態，減少下一次傷害。";
-      // 加入防禦動畫效果
-      const defendEffect = document.createElement("div");
-      defendEffect.classList.add("defendEffect");
-      defendEffect.innerText = "防禦！";
-      document.body.appendChild(defendEffect);
-      setTimeout(() => defendEffect.remove(), 2000);  // 延長動畫顯示時間
+      const defendAnim = document.createElement("div");
+      defendAnim.classList.add("defendAnimation");
+      defendAnim.innerText = "防禦！";
+      document.body.appendChild(defendAnim);
+      setTimeout(() => defendAnim.remove(), 1500);
+
+      msg = "你成功防禦了攻擊！";
+
     } else if (action === "skill") {
-      const crit = Math.random() < 0.3;
-      const dmg = crit ? 50 : 25;
-      enemyHP -= dmg;
-      msg = `你使用技能造成 ${dmg} 傷害${crit ? "（暴擊！）" : ""}`;
-      // 顯示技能動畫
-      const skillEffect = document.createElement("div");
-      skillEffect.classList.add("skillEffect");
-      skillEffect.innerText = "技能發動！";
-      document.body.appendChild(skillEffect);
-      setTimeout(() => skillEffect.remove(), 2000);  // 延長動畫顯示時間
+      const skillAnim = document.createElement("div");
+      skillAnim.classList.add("skillAnimation");
+      skillAnim.innerText = "技能！";
+      document.body.appendChild(skillAnim);
+      setTimeout(() => skillAnim.remove(), 1500);
+
+      const skillDmg = Math.floor(Math.random() * 40 + 20);
+      enemyHP -= skillDmg;
+      msg = `你使用技能造成了 ${skillDmg} 點傷害！`;
     }
-    const enemyAtk = Math.floor(Math.random() * 15);
-    playerHP -= enemyAtk;
-    document.getElementById("enemyHP").innerText = Math.max(0, enemyHP);
-    document.getElementById("playerHP").innerText = Math.max(0, playerHP);
-    log.innerText = msg + `\n烏薩奇537攻擊你造成 ${enemyAtk} 傷害！`;
+
+    document.getElementById("enemyHP").textContent = enemyHP;
+    log.textContent = msg;
+
+    // 随机触发背景效果
+    triggerRandomEffect();
   }
+
+  // 初始加载时触发特效
+  createRaindrops();
+  setInterval(triggerRandomEffect, 5000);
 </script>
 
 </body>
