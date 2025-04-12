@@ -57,9 +57,9 @@
   <h1>品格生技有限公司購物網</h1>
   <div id="options"></div>
   <div class="control-buttons">
-    <button class="button" id="add-option">新增選項</button>
-    <button class="button" id="edit-option">編輯選項</button>
-    <button class="button" id="delete-option">刪除選項</button>
+    <button class="button" id="add-option"> 新增產品 </button>
+    <button class="button" id="edit-option"> 編輯商品 </button>
+    <button class="button" id="delete-option"> 刪除單品 </button>
   </div>
   <div class="cart">
     <h3>購物車</h3>
@@ -79,7 +79,7 @@
     "你成功了！",
     "遇到挑戰，需要支援！",
     "獲得意外的合作機會！",
-    "流程順利完成！"
+    "流程設置順利完成！"
   ];
 
   function saveState() {
@@ -127,9 +127,9 @@
       clearBtn.id = "clear-cart";
       clearBtn.className = "button";
       clearBtn.style.backgroundColor = "#999";
-      clearBtn.innerText = "清空購物車";
+      clearBtn.innerText = "清空清單";
       clearBtn.onclick = () => {
-        if (confirm("確定要清空購物車？")) {
+        if (confirm("確定要清空清單？")) {
           cart = [];
           updateCart();
           saveState();
@@ -142,7 +142,7 @@
   }
 
   document.getElementById("add-option").onclick = () => {
-    const newText = prompt("輸入新選項文字：");
+    const newText = prompt("輸入新產品文字：");
     if (newText) {
       options.push(newText);
       renderOptions();
@@ -151,16 +151,16 @@
   };
 
   document.getElementById("edit-option").onclick = () => {
-    const index = prompt("輸入要編輯的選項編號（從 0 開始）：");
+    const index = prompt("輸入要編輯的產品編號（從 0 開始）：");
     if (index !== null && index >= 0 && index < options.length) {
-      const newText = prompt("輸入新的選項內容：", options[index]);
+      const newText = prompt("輸入新的商品內容：", options[index]);
       if (newText) {
         options[index] = newText;
         renderOptions();
         saveState();
       }
     } else {
-      alert("無效的選項編號");
+      alert("無效的編號");
     }
   };
 
