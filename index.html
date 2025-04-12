@@ -1,185 +1,117 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>品格生技有限公司工程冒險</title>
-  <style>
-    body {
-      font-family: "微軟正黑體", sans-serif;
-      background-color: #f8e6f0;
-      background-image: url('https://images.unsplash.com/photo-1587602540626-0137354b5e0a');
-      background-size: cover;
-      background-attachment: fixed;
-      margin: 0;
-      padding: 0;
-      color: #6a4f58;
-    }
-    .game-container {
-      background-color: rgba(255, 228, 243, 0.95);
-      max-width: 700px;
-      margin: 60px auto;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-    .button {
-      background-color: #f1a7c7;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      margin: 10px 5px;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      width: 100%;
-      text-align: center;
-    }
-    .button:hover {
-      background-color: #f08194;
-    }
-    .story-text {
-      font-size: 18px;
-      line-height: 1.6;
-      min-height: 150px;
-    }
-    .control-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
-    .control-buttons button {
-      width: 30%;
-    }
-    .option-buttons {
-      margin-top: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>動態冒險遊戲</title>
+    <style>
+        body {
+            font-family: "微軟正黑體", sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .game-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 700px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .story-text {
+            margin-bottom: 20px;
+        }
+        .option-button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            background: #ffc107;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .control-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .cart {
+            margin-top: 30px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-  <div class="game-container">
-    <h1>品格生技有限公司工程冒險</h1>
-    <div id="story" class="story-text"></div>
 
-    <div class="option-buttons" id="option-buttons"></div>
+<div class="game-container">
+    <h2>工程冒險遊戲</h2>
+    <div id="story" class="story-text">請新增選項開始冒險！</div>
+    <div id="options"></div>
 
     <div class="control-buttons">
-      <button class="button" id="add-item">新增項目</button>
-      <button class="button" id="edit-item">編輯項目</button>
-      <button class="button" id="delete-item">刪除項目</button>
+        <button onclick="addOption()" class="option-button">新增選項</button>
+        <button onclick="clearOptions()" class="option-button">清除所有選項</button>
+        <button onclick="addToCart()" class="option-button">加入購物車</button>
     </div>
-  </div>
 
-  <audio id="bg-music" loop>
-    <source src="https://cdn.pixabay.com/audio/2022/12/04/audio_6642b32b69.mp3" type="audio/mp3" />
-  </audio>
+    <div class="cart" id="cart">
+        <strong>購物車：</strong>
+        <ul id="cart-list"></ul>
+    </div>
+</div>
 
-  <script>
-    const storyEl = document.getElementById('story');
-    const optionButtonsEl = document.getElementById('option-buttons');
-    const addItemButton = document.getElementById('add-item');
-    const editItemButton = document.getElementById('edit-item');
-    const deleteItemButton = document.getElementById('delete-item');
-    const audio = document.getElementById('bg-music');
+<script>
+    const optionsDiv = document.getElementById('options');
+    const cartList = document.getElementById('cart-list');
+    let cart = [];
+    const randomResponses = [
+        "你遇到了一隻會說話的熊。",
+        "你發現了一個寶箱。",
+        "你被傳送到一個異世界。",
+        "你不小心按到紅色按鈕，引發警報。",
+        "你獲得了一瓶神秘藥水。"
+    ];
 
-    let options = [];
+    function addOption() {
+        const text = prompt("請輸入選項內容：");
+        if (!text) return;
 
-    window.onload = () => {
-      audio.play();
-      startGame();
-    };
+        const button = document.createElement('button');
+        button.innerText = text;
+        button.className = 'option-button';
+        button.onclick = () => {
+            const random = randomResponses[Math.floor(Math.random() * randomResponses.length)];
+            alert(random);
+        };
+        optionsDiv.appendChild(button);
+    }
 
-    function typeWriter(text, callback) {
-      let i = 0;
-      storyEl.innerHTML = "";
-      const interval = setInterval(() => {
-        storyEl.innerHTML += text.charAt(i);
-        i++;
-        if (i >= text.length) {
-          clearInterval(interval);
-          if (callback) callback();
+    function clearOptions() {
+        optionsDiv.innerHTML = '';
+    }
+
+    function addToCart() {
+        const item = prompt("輸入你要加入購物車的商品名稱：");
+        if (item) {
+            cart.push(item);
+            renderCart();
         }
-      }, 40);
     }
 
-    function startGame() {
-      typeWriter("歡迎來到品格生技有限公司的工程冒險！你是一位剛加入的工程師，現在開始你的旅程。", () => {
-        renderOptions();
-      });
-    }
-
-    function renderOptions() {
-      optionButtonsEl.innerHTML = "";
-      options.forEach((option, index) => {
-        const btn = document.createElement("button");
-        btn.className = "button";
-        btn.textContent = option;
-        btn.addEventListener("click", () => {
-          alert(`你選擇了：「${option}」`);
-          // 未來可擴充更多分支
+    function renderCart() {
+        cartList.innerHTML = '';
+        cart.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.innerText = `${index + 1}. ${item}`;
+            cartList.appendChild(li);
         });
-        optionButtonsEl.appendChild(btn);
-      });
     }
+</script>
 
-    function addItem() {
-      const newItem = prompt("請輸入新的項目名稱：");
-      if (newItem) {
-        options.push(newItem);
-        renderOptions();
-      }
-    }
-
-    function editItem() {
-      if (options.length === 0) return alert("目前沒有任何項目可編輯");
-      const index = prompt("請輸入要編輯的項目編號 (0 ~ " + (options.length - 1) + ")：");
-      if (index !== null && !isNaN(index) && index >= 0 && index < options.length) {
-        const newLabel = prompt("請輸入新的項目名稱：", options[index]);
-        if (newLabel) {
-          options[index] = newLabel;
-          renderOptions();
-        }
-      } else {
-        alert("無效的編號！");
-      }
-    }
-
-    function deleteItem() {
-      if (options.length === 0) return alert("目前沒有任何項目可刪除");
-      const index = prompt("請輸入要刪除的項目編號 (0 ~ " + (options.length - 1) + ")：");
-      if (index !== null && !isNaN(index) && index >= 0 && index < options.length) {
-        options.splice(index, 1);
-        renderOptions();
-      } else {
-        alert("無效的編號！");
-      }
-    }
-
-    addItemButton.addEventListener("click", addItem);
-    editItemButton.addEventListener("click", editItem);
-    deleteItemButton.addEventListener("click", deleteItem);
-
-    btn.addEventListener("click", () => {
-  const messages = [
-    "你獲得了一項技術突破！",
-    "你在茶水間聽到一個驚人的消息。",
-    "主管對你的表現很滿意，給了你升遷機會。",
-    "你不小心把樣本打翻了，被迫重做。",
-    "你成功跟國際廠商簽下一筆大單！",
-    "系統出現錯誤，需要你加班解決。",
-    "你在會議中提出的點子被採納了！",
-    "你誤信了同事的謠言，導致判斷錯誤。",
-    "你發現一份遺失的機密報告...",
-    "一位神秘人物邀請你參加一個秘密項目。"
-  ];
-  const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-  alert(randomMessage);
-});
-
-
-    
-    
-  </script>
 </body>
 </html>
