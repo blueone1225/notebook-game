@@ -55,121 +55,152 @@
   <div id="gameArea">
     <div id="player" class="character animate" style="top: 250px; left: 360px; background-image: url('default-character.png');"></div>
   </div>
-  <script>
-    let gamePaused = false;
-    let score = 0;
-    let enemies = [];
-    let enemyImage = 'default-enemy.png';
-    let player = document.getElementById("player");
-    let gameArea = document.getElementById("gameArea");
+  
+<script>
+  let gamePaused = false;
+  let score = 0;
+  let enemies = [];
+  let enemyImage = 'default-enemy.png';
+  let player = document.getElementById("player");
+  let gameArea = document.getElementById("gameArea");
 
-    function spawnEnemy(isBoss = false) {
-      if (gamePaused) return;
-      const enemy = document.createElement("div");
-      enemy.className = isBoss ? "boss enemy" : "enemy";
-      enemy.style.top = Math.random() * 520 + "px";
-      enemy.style.left = Math.random() * 720 + "px";
-      enemy.style.backgroundImage = `url(${enemyImage})`;
-      enemy.hp = isBoss ? 10 : 1;
-      gameArea.appendChild(enemy);
-      enemies.push(enemy);
-      updateEnemyCount();
+  function spawnEnemy(isBoss = false) {
+    if (gamePaused) return;
+    const enemy = document.createElement("div");
+    enemy.className = isBoss ? "boss enemy" : "enemy";
+    enemy.style.top = Math.random() * 520 + "px";
+    enemy.style.left = Math.random() * 720 + "px";
+    enemy.style.backgroundImage = `url(${enemyImage})`;
+    enemy.hp = isBoss ? 10 : 1;
+    gameArea.appendChild(enemy);
+    enemies.push(enemy);
+    updateEnemyCount();
 
-      enemy.onclick = () => {
-        enemy.hp--;
-        if (enemy.hp <= 0) {
-          gameArea.removeChild(enemy);
-          enemies = enemies.filter(e => e !== enemy);
-          score += isBoss ? 10 : 1;
-          document.getElementById("score").textContent = score;
-          updateEnemyCount();
+    enemy.onclick = () => {
+      enemy.hp--;
+      if (enemy.hp <= 0) {
+        gameArea.removeChild(enemy);
+        enemies = enemies.filter(e => e !== enemy);
+        score += isBoss ? 10 : 1;
+        document.getElementById("score").textContent = score;
+        updateEnemyCount();
+      }
+    };
+  }
+
+  function spawnLoop() {
+    if (gamePaused) return;
+    spawnEnemy();
+    if (Math.random() < 0.2) spawnEnemy(true);
+    setTimeout(spawnLoop, 1500);
+  }
+
+  function updateEnemyCount() {
+    document.getElementById("enemyCount").textContent = enemies.length;
+  }
+
+  function pauseGame() {
+    gamePaused = true;
+  }
+
+  function resumeGame() {
+    if (!gamePaused) return;
+    gamePaused = false;
+    spawnLoop();
+  }
+
+  function respawn() {
+    player.style.top = "250px";
+    player.style.left = "360px";
+    if (!player.classList.contains("animate")) {
+      player.classList.add("animate");
+    }
+  }
+
+  function uploadImage(event, type) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        if (type === 'character') {
+          player.style.backgroundImage = `url(${e.target.result})`;
+        } else if (type === 'enemy') {
+          enemyImage = e.target.result;
+          enemies.forEach(enemy => enemy.style.backgroundImage = `url(${enemyImage})`);
         }
       };
+      reader.readAsDataURL(file);
     }
+  }
 
-    function spawnLoop() {
-      if (gamePaused) return;
-      spawnEnemy();
-      if (Math.random() < 0.2) spawnEnemy(true); // 20% 機率出現Boss
-      setTimeout(spawnLoop, 1500);
-    }
-
-    function updateEnemyCount() {
-      document.getElementById("enemyCount").textContent = enemies.length;
-    }
-
-    function pauseGame() {
-      gamePaused = true;
-    }
-
-    function resumeGame() {
-      if (!gamePaused) return;
-      gamePaused = false;
-      spawnLoop();
-    }
-
-    function respawn() {
-      player.style.top = "250px";
-      player.style.left = "360px";
-      if (!player.classList.contains("animate")) {
-        player.classList.add("animate");
-      }
-    }
-
-    function uploadImage(event, type) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          if (type === 'character') {
-            player.style.backgroundImage = `url(${e.target.result})`;
-          } else if (type === 'enemy') {
-            enemyImage = e.target.result;
-            enemies.forEach(enemy => enemy.style.backgroundImage = `url(${enemyImage})`);
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function autoDodge() {
-      if (gamePaused) {
-        setTimeout(autoDodge, 200);
-        return;
-      }
-
-      const playerRect = player.getBoundingClientRect();
-
-      let dangerEnemy = enemies.find(enemy => {
-        const enemyRect = enemy.getBoundingClientRect();
-        const dx = enemyRect.left - playerRect.left;
-        const dy = enemyRect.top - playerRect.top;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        return distance < 100;
-      });
-
-      if (dangerEnemy) {
-        const dx = player.offsetLeft - dangerEnemy.offsetLeft;
-        const dy = player.offsetTop - dangerEnemy.offsetTop;
-
-        const moveDistance = 40;
-
-        let newLeft = player.offsetLeft + (dx > 0 ? moveDistance : -moveDistance);
-        let newTop = player.offsetTop + (dy > 0 ? moveDistance : -moveDistance);
-
-        newLeft = Math.max(0, Math.min(newLeft, gameArea.clientWidth - player.clientWidth));
-        newTop = Math.max(0, Math.min(newTop, gameArea.clientHeight - player.clientHeight));
-
-        player.style.left = newLeft + "px";
-        player.style.top = newTop + "px";
-      }
-
+  function autoDodge() {
+    if (gamePaused) {
       setTimeout(autoDodge, 200);
+      return;
     }
 
-    // 初始啟動
-    spawnLoop();
-    autoDodge();
-  </script>
+    const playerRect = player.getBoundingClientRect();
+
+    let dangerEnemy = enemies.find(enemy => {
+      const enemyRect = enemy.getBoundingClientRect();
+      const dx = enemyRect.left - playerRect.left;
+      const dy = enemyRect.top - playerRect.top;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      return distance < 100;
+    });
+
+    if (dangerEnemy) {
+      const dx = player.offsetLeft - dangerEnemy.offsetLeft;
+      const dy = player.offsetTop - dangerEnemy.offsetTop;
+      const moveDistance = 40;
+
+      let newLeft = player.offsetLeft + (dx > 0 ? moveDistance : -moveDistance);
+      let newTop = player.offsetTop + (dy > 0 ? moveDistance : -moveDistance);
+
+      newLeft = Math.max(0, Math.min(newLeft, gameArea.clientWidth - player.clientWidth));
+      newTop = Math.max(0, Math.min(newTop, gameArea.clientHeight - player.clientHeight));
+
+      player.style.left = newLeft + "px";
+      player.style.top = newTop + "px";
+    }
+
+    setTimeout(autoDodge, 200);
+  }
+
+  function randomMove() {
+    if (gamePaused) {
+      setTimeout(randomMove, 1000);
+      return;
+    }
+
+    const moveDistance = 30;
+    const direction = Math.floor(Math.random() * 4);
+    let newLeft = player.offsetLeft;
+    let newTop = player.offsetTop;
+
+    switch (direction) {
+      case 0: newTop -= moveDistance; break; // 上
+      case 1: newTop += moveDistance; break; // 下
+      case 2: newLeft -= moveDistance; break; // 左
+      case 3: newLeft += moveDistance; break; // 右
+    }
+
+    newLeft = Math.max(0, Math.min(newLeft, gameArea.clientWidth - player.clientWidth));
+    newTop = Math.max(0, Math.min(newTop, gameArea.clientHeight - player.clientHeight));
+
+    player.style.left = newLeft + "px";
+    player.style.top = newTop + "px";
+
+    setTimeout(randomMove, 1200 + Math.random() * 800); // 隨機間隔 1.2~2 秒
+  }
+
+  // 啟動遊戲邏輯
+  spawnLoop();
+  autoDodge();
+  randomMove();
+</script>
+
+
+
 </body>
 </html>
