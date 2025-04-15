@@ -24,6 +24,7 @@
       height: 80px;
       background-size: cover;
       background-position: center;
+      transition: top 0.3s ease, left 0.3s ease; /* 滑動動畫 */
     }
     .character.animate {
       animation: jump 0.3s infinite alternate;
@@ -131,8 +132,44 @@
       }
     }
 
+    function autoDodge() {
+      if (gamePaused) {
+        setTimeout(autoDodge, 200);
+        return;
+      }
+
+      const playerRect = player.getBoundingClientRect();
+
+      let dangerEnemy = enemies.find(enemy => {
+        const enemyRect = enemy.getBoundingClientRect();
+        const dx = enemyRect.left - playerRect.left;
+        const dy = enemyRect.top - playerRect.top;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < 100;
+      });
+
+      if (dangerEnemy) {
+        const dx = player.offsetLeft - dangerEnemy.offsetLeft;
+        const dy = player.offsetTop - dangerEnemy.offsetTop;
+
+        const moveDistance = 40;
+
+        let newLeft = player.offsetLeft + (dx > 0 ? moveDistance : -moveDistance);
+        let newTop = player.offsetTop + (dy > 0 ? moveDistance : -moveDistance);
+
+        newLeft = Math.max(0, Math.min(newLeft, gameArea.clientWidth - player.clientWidth));
+        newTop = Math.max(0, Math.min(newTop, gameArea.clientHeight - player.clientHeight));
+
+        player.style.left = newLeft + "px";
+        player.style.top = newTop + "px";
+      }
+
+      setTimeout(autoDodge, 200);
+    }
+
     // 初始啟動
     spawnLoop();
+    autoDodge();
   </script>
 </body>
 </html>
