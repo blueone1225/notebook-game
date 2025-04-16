@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <title> 動作遊戲 -</title>
+  <title>動作遊戲 -</title>
   <style>
     body {
       background-color: #fff8e1;
@@ -24,7 +24,7 @@
       height: 80px;
       background-size: cover;
       background-position: center;
-      transition: top 0.3s ease, left 0.3s ease; /* 滑動動畫 */
+      transition: top 0.3s ease, left 0.3s ease;
     }
     .character.animate {
       animation: jump 0.3s infinite alternate;
@@ -41,7 +41,7 @@
   </style>
 </head>
 <body>
-  <h1> 動作遊戲 - 重生  </h1>
+  <h1>動作遊戲 - 重生</h1>
   <div>
     <button onclick="pauseGame()">暫停遊戲</button>
     <button onclick="resumeGame()">恢復遊戲</button>
@@ -53,14 +53,15 @@
     <label>上傳敵人圖片<input type="file" accept="image/*" onchange="uploadImage(event, 'enemy')"></label>
   </div>
   <div id="gameArea">
-    <div id="player" class="character animate" style="top: 250px; left: 360px; background-image: url('default-character.png');"></div>
+    <div id="player" class="character animate" style="top: 250px; left: 360px; background-image: url('https://meet.eslite.com/CMS/Files/@M091/2024-11/2024_chiikawa/004_chiikawa.jpg');"></div>
   </div>
-  
+
 <script>
   let gamePaused = false;
   let score = 0;
   let enemies = [];
-  let enemyImage = 'default-enemy.png';
+  let enemyImage = 'https://meet.eslite.com/CMS/Files/@M091/2024-11/2024_chiikawa/003_chiikawa.jpg';
+  let bossImage = 'https://meet.eslite.com/CMS/Files/@M091/2024-11/2024_chiikawa/008_chiikawa.jpg';
   let player = document.getElementById("player");
   let gameArea = document.getElementById("gameArea");
 
@@ -70,7 +71,7 @@
     enemy.className = isBoss ? "boss enemy" : "enemy";
     enemy.style.top = Math.random() * 520 + "px";
     enemy.style.left = Math.random() * 720 + "px";
-    enemy.style.backgroundImage = `url(${enemyImage})`;
+    enemy.style.backgroundImage = `url(${isBoss ? bossImage : enemyImage})`;
     enemy.hp = isBoss ? 10 : 1;
     gameArea.appendChild(enemy);
     enemies.push(enemy);
@@ -126,7 +127,11 @@
           player.style.backgroundImage = `url(${e.target.result})`;
         } else if (type === 'enemy') {
           enemyImage = e.target.result;
-          enemies.forEach(enemy => enemy.style.backgroundImage = `url(${enemyImage})`);
+          enemies.forEach(enemy => {
+            if (!enemy.classList.contains("boss")) {
+              enemy.style.backgroundImage = `url(${enemyImage})`;
+            }
+          });
         }
       };
       reader.readAsDataURL(file);
@@ -179,10 +184,10 @@
     let newTop = player.offsetTop;
 
     switch (direction) {
-      case 0: newTop -= moveDistance; break; // 上
-      case 1: newTop += moveDistance; break; // 下
-      case 2: newLeft -= moveDistance; break; // 左
-      case 3: newLeft += moveDistance; break; // 右
+      case 0: newTop -= moveDistance; break;
+      case 1: newTop += moveDistance; break;
+      case 2: newLeft -= moveDistance; break;
+      case 3: newLeft += moveDistance; break;
     }
 
     newLeft = Math.max(0, Math.min(newLeft, gameArea.clientWidth - player.clientWidth));
@@ -191,16 +196,12 @@
     player.style.left = newLeft + "px";
     player.style.top = newTop + "px";
 
-    setTimeout(randomMove, 1200 + Math.random() * 800); // 隨機間隔 1.2~2 秒
+    setTimeout(randomMove, 1200 + Math.random() * 800);
   }
 
-  // 啟動遊戲邏輯
   spawnLoop();
   autoDodge();
   randomMove();
 </script>
-
-
-
 </body>
 </html>
