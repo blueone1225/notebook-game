@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <title>動作遊戲 -</title>
+  <title>動作遊戲 - 重生</title>
   <style>
     body {
       background-color: #fff8e1;
@@ -16,6 +16,8 @@
       margin: 0 auto;
       border: 4px solid #ffcc80;
       background-color: #fff3e0;
+      background-size: cover;
+      background-position: center;
       overflow: hidden;
     }
     .character, .enemy, .boss {
@@ -51,7 +53,9 @@
     <br>
     <label>上傳主角圖片<input type="file" accept="image/*" onchange="uploadImage(event, 'character')"></label>
     <label>上傳敵人圖片<input type="file" accept="image/*" onchange="uploadImage(event, 'enemy')"></label>
+    <label>上傳背景圖片<input type="file" accept="image/*" onchange="uploadImage(event, 'background')"></label>
   </div>
+
   <div id="gameArea">
     <div id="player" class="character animate" style="top: 250px; left: 360px; background-image: url('https://meet.eslite.com/CMS/Files/@M091/2024-11/2024_chiikawa/004_chiikawa.jpg');"></div>
   </div>
@@ -132,6 +136,8 @@
               enemy.style.backgroundImage = `url(${enemyImage})`;
             }
           });
+        } else if (type === 'background') {
+          gameArea.style.backgroundImage = `url(${e.target.result})`;
         }
       };
       reader.readAsDataURL(file);
