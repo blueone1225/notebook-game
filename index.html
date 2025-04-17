@@ -230,6 +230,19 @@
       }, 1000); // 冷卻時間為 1 秒
     }
 
+    // 隨機移動主角
+    const movementRangeX = window.innerWidth - 50;
+    const movementRangeY = window.innerHeight - 50;
+
+    function movePlayerRandomly() {
+      const randomX = Math.floor(Math.random() * movementRangeX);
+      const randomY = Math.floor(Math.random() * movementRangeY);
+      player.style.left = `${randomX}px`;
+      player.style.top = `${randomY}px`;
+    }
+
+    setInterval(movePlayerRandomly, 1000);  // 每 1 秒隨機移動一次
+
     spawnLoop();
   </script>
 </body>
