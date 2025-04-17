@@ -196,8 +196,8 @@
 
       const skillEffect = document.createElement("div");
       skillEffect.className = "skill-effect";
-      const x = player.offsetLeft + 40 - 100;
-      const y = player.offsetTop + 40 - 100;
+      const x = player.offsetLeft + 40 - 150; // 增加範圍為 300%
+      const y = player.offsetTop + 40 - 150;
       skillEffect.style.left = `${x}px`;
       skillEffect.style.top = `${y}px`;
       gameArea.appendChild(skillEffect);
@@ -209,7 +209,7 @@
         const dx = (enemy.offsetLeft + 40) - (player.offsetLeft + 40);
         const dy = (enemy.offsetTop + 40) - (player.offsetTop + 40);
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 100) { // 攻擊範圍
+        if (distance < 300) { // 攻擊範圍 300%
           enemy.hp -= 2;
           const bar = enemy.querySelector(".hp-bar");
           if (enemy.hp <= 0) {
@@ -227,52 +227,10 @@
 
       setTimeout(() => {
         skillCooldown = false;
-      }, 1000); // 冷卻時間改為 1 秒
-    }
-
-    function autoDodge() {
-      if (gamePaused) return setTimeout(autoDodge, 200);
-      const playerRect = player.getBoundingClientRect();
-      let threat = enemies.find(enemy => {
-        const rect = enemy.getBoundingClientRect();
-        const dx = rect.left - playerRect.left;
-        const dy = rect.top - playerRect.top;
-        return Math.sqrt(dx * dx + dy * dy) < 100;
-      });
-      if (threat) {
-        const dx = player.offsetLeft - threat.offsetLeft;
-        const dy = player.offsetTop - threat.offsetTop;
-        const move = 40;
-        let newLeft = player.offsetLeft + (dx > 0 ? move : -move);
-        let newTop = player.offsetTop + (dy > 0 ? move : -move);
-        newLeft = Math.max(0, Math.min(newLeft, gameArea.clientWidth - 80));
-        newTop = Math.max(0, Math.min(newTop, gameArea.clientHeight - 80));
-        player.style.left = newLeft + "px";
-        player.style.top = newTop + "px";
-      }
-      setTimeout(autoDodge, 200);
-    }
-
-    function randomMove() {
-      if (gamePaused) return setTimeout(randomMove, 1000);
-      const move = 30;
-      const dir = Math.floor(Math.random() * 4);
-      let newLeft = player.offsetLeft;
-      let newTop = player.offsetTop;
-      if (dir === 0) newTop -= move;
-      else if (dir === 1) newTop += move;
-      else if (dir === 2) newLeft -= move;
-      else newLeft += move;
-      newLeft = Math.max(0, Math.min(newLeft, gameArea.clientWidth - 80));
-      newTop = Math.max(0, Math.min(newTop, gameArea.clientHeight - 80));
-      player.style.left = newLeft + "px";
-      player.style.top = newTop + "px";
-      setTimeout(randomMove, 1000 + Math.random() * 500);
+      }, 1000); // 冷卻時間為 1 秒
     }
 
     spawnLoop();
-    autoDodge();
-    randomMove();
   </script>
 </body>
 </html>
