@@ -48,16 +48,31 @@
     }
     .skill-effect {
       position: absolute;
-      width: 200px;
-      height: 200px;
-      background-color: rgba(255, 200, 0, 0.5);
+      width: 300px;
+      height: 300px;
+      background-color: rgba(255, 200, 0, 0.7);
       border-radius: 50%;
       pointer-events: none;
-      animation: boom 0.5s ease-out;
+      animation: boom 0.6s ease-out;
+      box-shadow: 0 0 20px 10px rgba(255, 200, 0, 0.7);
     }
     @keyframes boom {
-      from { transform: scale(0.5); opacity: 1; }
-      to { transform: scale(1.5); opacity: 0; }
+      0% { transform: scale(0.5); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+    #notification {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 18px;
+      display: none;
+      z-index: 999;
     }
   </style>
 </head>
@@ -78,6 +93,7 @@
   </div>
 
   <div id="gameArea">
+    <div id="notification"></div>
     <div id="player" class="character animate" style="top: 250px; left: 360px; background-image: url('https://meet.eslite.com/CMS/Files/@M091/2024-11/2024_chiikawa/003_chiikawa.jpg');"></div>
   </div>
 
@@ -90,9 +106,18 @@
     let skillCooldown = false;
     let player = document.getElementById("player");
     let gameArea = document.getElementById("gameArea");
+    let notification = document.getElementById("notification");
 
     let enemyImage = 'https://meet.eslite.com/CMS/Files/@M091/2024-11/2024_chiikawa/004_chiikawa.jpg';
     let bossImage = 'https://meet.eslite.com/CMS/Files/@M091/2024-11/2024_chiikawa/008_chiikawa.jpg';
+
+    function showNotification(message) {
+      notification.textContent = message;
+      notification.style.display = 'block';
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 1200);
+    }
 
     function updateEnemyCount() {
       document.getElementById("enemyCount").textContent = enemies.length;
@@ -124,10 +149,12 @@
           gameArea.removeChild(enemy);
           enemies = enemies.filter(e => e !== enemy);
           score += isBoss ? 10 : 1;
-          document.getElementById("score").textContent = score;
+          showNotification(isBoss ? "BOSS 擊敗！+10 分" : "敵人擊敗！+1 分");
         } else {
           hpBar.style.width = (enemy.hp / enemy.maxHp) * 100 + "%";
+          showNotification("命中！敵人 -1 HP");
         }
+        document.getElementById("score").textContent = score;
         updateEnemyCount();
       };
 
@@ -196,21 +223,22 @@
 
       const skillEffect = document.createElement("div");
       skillEffect.className = "skill-effect";
-      const x = player.offsetLeft + 40 - 150; // 增加範圍為 300%
+      const x = player.offsetLeft + 40 - 150;
       const y = player.offsetTop + 40 - 150;
       skillEffect.style.left = `${x}px`;
       skillEffect.style.top = `${y}px`;
       gameArea.appendChild(skillEffect);
 
-      setTimeout(() => gameArea.removeChild(skillEffect), 500);
+      setTimeout(() => gameArea.removeChild(skillEffect), 600);
 
-      // 精準攻擊
+      let hitSomething = false;
       enemies.forEach(enemy => {
         const dx = (enemy.offsetLeft + 40) - (player.offsetLeft + 40);
         const dy = (enemy.offsetTop + 40) - (player.offsetTop + 40);
         const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 300) { // 攻擊範圍 300%
+        if (distance < 300) {
           enemy.hp -= 2;
+          hitSomething = true;
           const bar = enemy.querySelector(".hp-bar");
           if (enemy.hp <= 0) {
             gameArea.removeChild(enemy);
@@ -225,12 +253,17 @@
       document.getElementById("score").textContent = score;
       updateEnemyCount();
 
+      if (hitSomething) {
+        showNotification("技能命中敵人！-2 HP");
+      } else {
+        showNotification("技能釋放成功，但未命中敵人。");
+      }
+
       setTimeout(() => {
         skillCooldown = false;
-      }, 1000); // 冷卻時間為 1 秒
+      }, 1000);
     }
 
-    // 隨機移動主角
     const movementRangeX = window.innerWidth - 50;
     const movementRangeY = window.innerHeight - 50;
 
@@ -241,8 +274,7 @@
       player.style.top = `${randomY}px`;
     }
 
-    setInterval(movePlayerRandomly, 1000);  // 每 1 秒隨機移動一次
-
+    setInterval(movePlayerRandomly, 1000);
     spawnLoop();
   </script>
 </body>
